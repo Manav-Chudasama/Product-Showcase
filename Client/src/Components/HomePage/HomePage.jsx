@@ -7,10 +7,11 @@ import ContactUs from "./ContactUs";
 import Statistics from "./Statistics";
 import ProductPromo from "./ProductPromo";
 import { ClerkLoaded } from "@clerk/clerk-react";
+import { Fade } from "react-awesome-reveal";
 export default function HomePage() {
   return (
     <div>
-      <div>
+      <Fade>
         <ClerkLoaded>
           <HeroCrousel />
           <Overview />
@@ -20,7 +21,7 @@ export default function HomePage() {
           <ContactUs />
           <Statistics />
         </ClerkLoaded>
-      </div>
+      </Fade>
     </div>
   );
 }

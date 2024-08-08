@@ -4,6 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import PropTypes from "prop-types";
 import { addToShoppingCart } from "../../utils/api/shoppingCartApi";
 import { deleteFromWishlist } from "../../utils/api/wishlistApi";
+import { Fade } from "react-awesome-reveal";
 const WishlistCard = ({
   product,
   // productTitle,
@@ -152,7 +153,7 @@ export default function Wishlist() {
     }
   }, [isLoaded, user]);
   return (
-    <div>
+    <Fade delay={200}>
       <div className="flex flex-col min-h-dvh max-w-full m-2 p-6 space-y-4 sm:p-10">
         <h1 className="text-3xl font-bold text-gray-800 text-center">
           Your Wishlist
@@ -168,7 +169,7 @@ export default function Wishlist() {
             ))}
         </ul>
       </div>
-    </div>
+    </Fade>
   );
 }
 

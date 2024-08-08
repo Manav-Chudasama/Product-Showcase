@@ -3,6 +3,7 @@ import ProductCard from "./ProductCard";
 import { FaFilter } from "react-icons/fa";
 import axios from "axios";
 import { useLoaderData } from "react-router-dom";
+import { Fade } from "react-awesome-reveal";
 
 const Filter = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -132,7 +133,7 @@ export default function ThriftProducts() {
   //   },
   // ];
   return (
-    <>
+    <Fade delay={200}>
       <section className="bg-gray-50 py-4 antialiased md:py-6">
         <div className="flex mb-4 max-w-full space-y-3">
           <div className="w-[90%] flex items-center relative left-[1%] lg:left-[7%] gap-5">
@@ -176,6 +177,6 @@ export default function ThriftProducts() {
           </div>
         </div>
       </section>
-    </>
+    </Fade>
   );
 }

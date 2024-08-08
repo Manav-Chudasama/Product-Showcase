@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import { Fade } from "react-awesome-reveal";
 export default function AddProduct() {
   const { user } = useUser();
   const [productData, setProductData] = useState({
@@ -143,7 +144,7 @@ export default function AddProduct() {
   };
 
   return (
-    <div>
+    <Fade>
       <section className="bg-white">
         <div className="py-2 px-4 mx-auto max-w-7xl lg:py-8">
           <h2 className="mb-4 text-3xl text-center font-bold text-gray-900">
@@ -276,6 +277,6 @@ export default function AddProduct() {
           </form>
         </div>
       </section>
-    </div>
+    </Fade>
   );
 }

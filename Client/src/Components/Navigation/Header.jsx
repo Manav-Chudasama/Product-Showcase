@@ -15,6 +15,7 @@ import {
   SignOutButton,
   useUser,
 } from "@clerk/clerk-react";
+import { Fade, Slide } from "react-awesome-reveal";
 export default function Header() {
   const { user } = useUser();
   // console.log(user.firstname);
@@ -107,7 +108,7 @@ export default function Header() {
               {dropdownVisible && (
                 <div
                   id="dropdown"
-                  className="z-10 absolute top-20 right-5 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                  className="z-50 absolute top-20 right-5 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
                 >
                   <SignedIn>
                     <ul
@@ -220,6 +221,7 @@ export default function Header() {
               )}
             </div>
           </div>
+
           {/* <div className="hidden md:flex w-full p-4">
           <div className="w-[75%] flex items-center">
             <ul className="w-full text-lg flex justify-around space-x-20 font-bold">
@@ -246,7 +248,7 @@ export default function Header() {
             </Link>
           </div>
         </div> */}
-          <div className="md:hidden pt-2">{/* <Search /> */}</div>
+          {/* <div className="md:hidden pt-2"><Search /></div> */}
           <hr className="hidden md:block" />
         </div>
       </ClerkLoaded>

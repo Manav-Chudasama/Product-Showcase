@@ -51,7 +51,7 @@ export default function AddReviewModal({
     handleClose();
   };
   return (
-    <div className="w-96">
+    <div className="w-96 z-50">
       <div
         id="review-modal"
         tabIndex={-1}

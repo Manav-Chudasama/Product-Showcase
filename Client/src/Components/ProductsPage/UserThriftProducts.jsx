@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import { Fade } from "react-awesome-reveal";
 
 export default function UserThriftProducts() {
   const { user } = useUser();
@@ -29,7 +30,7 @@ export default function UserThriftProducts() {
   }, [user]);
 
   return (
-    <div>
+    <Fade delay={200}>
       <section className="bg-gray-50 py-4 antialiased md:py-6">
         <div className="flex mb-4 max-w-full space-y-3">
           <div className="w-[90%] flex items-center relative left-[1%] lg:left-[7%] gap-5"></div>
@@ -47,6 +48,6 @@ export default function UserThriftProducts() {
           </div>
         </div>
       </section>
-    </div>
+    </Fade>
   );
 }

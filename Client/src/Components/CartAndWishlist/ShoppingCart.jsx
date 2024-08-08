@@ -5,6 +5,7 @@ import axios from "axios";
 
 import { TiMinus, TiPlus } from "react-icons/ti";
 import { deleteFromShoppingCart } from "../../utils/api/shoppingCartApi";
+import { Fade } from "react-awesome-reveal";
 
 const ShoppingCard = ({
   product,
@@ -126,7 +127,10 @@ export default function ShoppingCart() {
     }
   }, [isLoaded, user]);
   return (
-    <div className="font-sans px-2 max-md:max-w-xl mx-auto bg-white py-4">
+    <Fade
+      delay={200}
+      className="font-sans px-2 max-md:max-w-xl mx-auto bg-white py-4"
+    >
       <h1 className="text-3xl font-bold text-gray-800 text-center">
         Shopping Cart
       </h1>
@@ -266,7 +270,7 @@ export default function ShoppingCart() {
           </div>
         </div>
       </div>
-    </div>
+    </Fade>
   );
 }
 

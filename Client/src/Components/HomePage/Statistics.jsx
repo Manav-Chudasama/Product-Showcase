@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Zoom } from "react-awesome-reveal";
 
 export default function Statistics() {
   const [totalUsers, setTotalUsers] = useState(0);
@@ -45,34 +46,36 @@ export default function Statistics() {
   return (
     <div>
       <section className="body-font bg-gray-100">
-        <div className="container px-5 py-24 mx-auto">
-          <div className="flex flex-wrap -m-4 text-center">
-            <div className="p-4 sm:w-1/4 w-1/2">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
-                {totalUsers}
-              </h2>
-              <p className="leading-relaxed">Users</p>
-            </div>
-            <div className="p-4 sm:w-1/4 w-1/2">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
-                {totalFreshProducts}
-              </h2>
-              <p className="leading-relaxed">Fresh Products</p>
-            </div>
-            <div className="p-4 sm:w-1/4 w-1/2">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
-                35
-              </h2>
-              <p className="leading-relaxed">Products Uploaded</p>
-            </div>
-            <div className="p-4 sm:w-1/4 w-1/2">
-              <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
-                4
-              </h2>
-              <p className="leading-relaxed">Products</p>
+        <Zoom>
+          <div className="container px-5 py-24 mx-auto">
+            <div className="flex flex-wrap -m-4 text-center">
+              <div className="p-4 sm:w-1/4 w-1/2">
+                <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
+                  {totalUsers}
+                </h2>
+                <p className="leading-relaxed">Users</p>
+              </div>
+              <div className="p-4 sm:w-1/4 w-1/2">
+                <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
+                  {totalFreshProducts}
+                </h2>
+                <p className="leading-relaxed">Fresh Products</p>
+              </div>
+              <div className="p-4 sm:w-1/4 w-1/2">
+                <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
+                  35
+                </h2>
+                <p className="leading-relaxed">Products Uploaded</p>
+              </div>
+              <div className="p-4 sm:w-1/4 w-1/2">
+                <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
+                  4
+                </h2>
+                <p className="leading-relaxed">Products</p>
+              </div>
             </div>
           </div>
-        </div>
+        </Zoom>
       </section>
     </div>
   );
