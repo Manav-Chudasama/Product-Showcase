@@ -4,6 +4,7 @@ import axios from "axios";
 
 export const getProductReviews = async (product, productType) => {
   try {
+    productType = productType == "Fresh Product" ? "fresh" : "thrift";
     const response = await axios.get(
       `http://localhost:4000/api/review/get-product-reviews/${product._id}/${productType}`
     );

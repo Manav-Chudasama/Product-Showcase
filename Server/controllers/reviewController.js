@@ -103,9 +103,10 @@ export const getProductReviews = async (req, res) => {
     // Determine which product array to use
     const productField =
       productType === "fresh" ? "freshProducts" : "thriftProducts";
-    const productReviews = "fresh"
-      ? await freshProductsModel.findById(productId).select("reviews")
-      : await thriftProductsModel.findById(productId).select("reviews");
+    const productReviews =
+      productField == "freshProducts"
+        ? await freshProductsModel.findById(productId).select("reviews")
+        : await thriftProductsModel.findById(productId).select("reviews");
 
     if (!productReviews) {
       return res

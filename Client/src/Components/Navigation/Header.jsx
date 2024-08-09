@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaShoppingCart, FaFilter } from "react-icons/fa";
 import { BsFillBagHeartFill } from "react-icons/bs";
@@ -16,11 +16,13 @@ import {
   useUser,
 } from "@clerk/clerk-react";
 import { Fade, Slide } from "react-awesome-reveal";
+import { IoIosArrowDown } from "react-icons/io";
 export default function Header() {
   const { user } = useUser();
   // console.log(user.firstname);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
   const toggleSidebar = () => {
     console.log(isSidebarOpen);
     setSidebarOpen(!isSidebarOpen);
@@ -29,6 +31,20 @@ export default function Header() {
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -91,9 +107,12 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <div className="w-[20%] flex justify-center items-center">
+            <div
+              className="w-[20%] flex justify-center items-center"
+              ref={dropdownRef}
+            >
               <div
-                className="flex items-center space-x-2 cursor-pointer"
+                className="flex items-center px-2 pr-6 space-x-2 cursor-pointer rounded-lg hover:bg-gray-100"
                 onClick={toggleDropdown}
               >
                 <img
@@ -101,14 +120,15 @@ export default function Header() {
                   className="h-12 rounded-full"
                   alt=""
                 />
-                <span className="hidden md:block font-bold">
+                <span className="hidden md:flex items-center gap-1 font-bold">
                   {user?.firstName ?? ""}
+                  <IoIosArrowDown className="mt-1" />
                 </span>
               </div>
               {dropdownVisible && (
                 <div
                   id="dropdown"
-                  className="z-50 absolute top-20 right-5 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+                  className="z-50 absolute top-20 right-5 bg-white divide-y divide-gray-100 rounded-lg shadow w-44"
                 >
                   <SignedIn>
                     <ul
