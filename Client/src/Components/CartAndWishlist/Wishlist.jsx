@@ -153,7 +153,7 @@ export default function Wishlist() {
     }
   }, [isLoaded, user]);
   return (
-    <Fade delay={200}>
+    <Fade delay={200} triggerOnce>
       <div className="flex flex-col min-h-dvh max-w-full m-2 p-6 space-y-4 sm:p-10">
         <h1 className="text-3xl font-bold text-gray-800 text-center">
           Your Wishlist

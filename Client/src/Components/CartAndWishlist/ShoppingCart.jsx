@@ -129,6 +129,7 @@ export default function ShoppingCart() {
   return (
     <Fade
       delay={200}
+      triggerOnce
       className="font-sans px-2 max-md:max-w-xl mx-auto bg-white py-4"
     >
       <h1 className="text-3xl font-bold text-gray-800 text-center">

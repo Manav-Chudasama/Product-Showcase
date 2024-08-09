@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import PropTypes from "prop-types";
 import ProductCard from "./ProductCard";
 // import { Filter } from "../Navigation/Search";
 import { FaFilter } from "react-icons/fa";
@@ -7,11 +8,16 @@ import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
 
-const Filter = () => {
+const Filter = ({ selectedCategory, setSelectedCategory }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    setDropdownVisible(false); // Close the dropdown after selection
   };
   return (
     <>
@@ -47,40 +53,52 @@ const Filter = () => {
             className="z-10 absolute mt-4 bg-white divide-y divide-gray-100 rounded-lg shadow w-44"
           >
             <ul
-              className="py-2 text-sm text-gray-700 dark:text-gray-200"
+              className="py-2 text-sm text-gray-700"
               aria-labelledby="dropdownDefaultButton"
             >
               <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                <button
+                  onClick={() => handleCategoryClick("All Category")}
+                  className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
+                    selectedCategory === "All Category"
+                      ? "bg-gray-100 text-blue-600"
+                      : ""
+                  }`}
                 >
                   All Category
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                <button
+                  onClick={() => handleCategoryClick("Clothing")}
+                  className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
+                    selectedCategory === "Clothing"
+                      ? "bg-gray-100 text-blue-600"
+                      : ""
+                  }`}
                 >
                   Clothing
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                <button
+                  onClick={() => handleCategoryClick("Electronics")}
+                  className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
+                    selectedCategory === "Electronics"
+                      ? "bg-gray-100 text-blue-600"
+                      : ""
+                  }`}
                 >
                   Electronics
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="#"
+                <button
+                  onClick={() => handleCategoryClick("Footwear")}
                   className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   Footwear
-                </a>
+                </button>
               </li>
               <li>
                 <a
@@ -100,6 +118,7 @@ const Filter = () => {
 
 export default function FreshProducts() {
   const [products, setProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All Category");
   const fetchedProducts = useLoaderData();
   // Fisher-Yates shuffle algorithm
   const shuffleArray = (array) => {
@@ -120,35 +139,24 @@ export default function FreshProducts() {
       setProducts(shuffledProducts);
     }
   }, [fetchedProducts]);
-  // const shuffledProducts = shuffleArray(fetchedproducts.freshProducts);
-  // setProducts(shuffledProducts);
-  console.log(fetchedProducts);
 
-  // const fetchProducts = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "http://localhost:4000/api/fresh-products/"
-  //     );
-  //     console.log(response);
-
-  //     const shuffledProducts = shuffleArray(response.data.freshProducts);
-  //     setProducts(shuffledProducts);
-  //     // console.log("products:", products[2].images[0]);
-  //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, []);
+  // Filter products based on the selected category
+  const filteredProducts = products.filter((product) => {
+    if (selectedCategory === "All Category") {
+      return true; // Show all products if 'All Category' is selected
+    }
+    return product.category === selectedCategory;
+  });
 
   return (
-    <>
-      <Fade delay={200} className="bg-gray-50 py-4 antialiased md:py-6">
+    <Fade>
+      <div className="bg-gray-50 py-4 antialiased md:py-6">
         <div className="flex mb-4 max-w-full space-y-3">
           <div className="w-[90%] flex items-center relative left-[1%] lg:left-[7%] gap-5">
-            <Filter />
+            <Filter
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
             <div className="relative w-full sm:w-[60%] md:w-[70%] lg:w-[50%]">
               <input
                 type="text"
@@ -177,7 +185,7 @@ export default function FreshProducts() {
         </div>
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
           <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product, index) => (
+            {filteredProducts.map((product, index) => (
               <ProductCard
                 key={index}
                 product={product}
@@ -186,7 +194,12 @@ export default function FreshProducts() {
             ))}
           </div>
         </div>
-      </Fade>
-    </>
+      </div>
+    </Fade>
   );
 }
+
+Filter.propTypes = {
+  selectedCategory: PropTypes.object.isRequired,
+  setSelectedCategory: PropTypes.func.isRequired,
+};
