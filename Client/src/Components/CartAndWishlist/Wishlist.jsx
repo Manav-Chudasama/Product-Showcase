@@ -5,13 +5,7 @@ import PropTypes from "prop-types";
 import { addToShoppingCart } from "../../utils/api/shoppingCartApi";
 import { deleteFromWishlist } from "../../utils/api/wishlistApi";
 import { Fade } from "react-awesome-reveal";
-const WishlistCard = ({
-  product,
-  // productTitle,
-  // productImg,
-  // productPrice,
-  // ProductCategory,
-}) => {
+const WishlistCard = ({ product, onRemove }) => {
   const { user } = useUser();
 
   const handleShoppingCart = async () => {
@@ -32,6 +26,9 @@ const WishlistCard = ({
           productType
         );
         console.log(result.data);
+        if (result.data.success) {
+          onRemove(product.productId._id, productType);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -49,6 +46,9 @@ const WishlistCard = ({
         productType
       );
       console.log(response.data);
+      if (response.data.success) {
+        onRemove(product.productId._id, productType);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -147,6 +147,22 @@ export default function Wishlist() {
     }
   };
 
+  const handleRemoveProduct = (productId, productType) => {
+    setWishlist((prevWishlist) => {
+      const updatedFreshProducts = prevWishlist.freshProducts.filter(
+        (product) => product.productId._id !== productId
+      );
+      const updatedThriftProducts = prevWishlist.thriftProducts.filter(
+        (product) => product.productId._id !== productId
+      );
+
+      return {
+        freshProducts: updatedFreshProducts,
+        thriftProducts: updatedThriftProducts,
+      };
+    });
+  };
+
   useEffect(() => {
     if (isLoaded && user) {
       fetchWishlist();
@@ -158,14 +174,28 @@ export default function Wishlist() {
         <h1 className="text-3xl font-bold text-gray-800 text-center">
           Your Wishlist
         </h1>
+        {wishlist.freshProducts.length == 0 &&
+          wishlist.thriftProducts.length == 0 && (
+            <div className="text-2xl font-bold">
+              Add Something to Your Wishlist...
+            </div>
+          )}
         <ul className="flex flex-col divide-y divide-gray-700">
           {wishlist &&
             wishlist.freshProducts.map((product, index) => (
-              <WishlistCard key={index} product={product} />
+              <WishlistCard
+                key={index}
+                product={product}
+                onRemove={handleRemoveProduct}
+              />
             ))}
           {wishlist &&
             wishlist.thriftProducts.map((product, index) => (
-              <WishlistCard key={index} product={product} />
+              <WishlistCard
+                key={index}
+                product={product}
+                onRemove={handleRemoveProduct}
+              />
             ))}
         </ul>
       </div>
@@ -175,8 +205,5 @@ export default function Wishlist() {
 
 WishlistCard.propTypes = {
   product: PropTypes.object.isRequired,
-  // productTitle: PropTypes.string.isRequired,
-  // ProductCategory: PropTypes.string.isRequired,
-  // productImg: PropTypes.string.isRequired,
-  // productPrice: PropTypes.number.isRequired,
+  onRemove: PropTypes.func.isRequired,
 };

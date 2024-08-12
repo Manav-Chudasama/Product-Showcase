@@ -1,5 +1,4 @@
 import React from "react";
-import HomePage from "./Components/HomePage/HomePage";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,6 +9,7 @@ import {
   createRoutesFromElements,
   Outlet,
 } from "react-router-dom";
+import HomePage from "./Components/HomePage/HomePage";
 import Header from "./Components/Navigation/Header";
 import FreshProducts from "./Components/ProductsPage/FreshProducts";
 import Footer from "./Components/Footer/Footer";
@@ -29,34 +29,16 @@ import {
 
 function Layout() {
   const location = useLocation();
-
+  // const containerRef = useRef(null);
   const shouldHideHeaderFooter =
     location.pathname === "/sign-up" || location.pathname === "/sign-in";
 
   return (
-    <>
+    <div>
       {!shouldHideHeaderFooter && <Header />}
-      {/* <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/fresh-products" element={<FreshProducts />} />
-        <Route path="/thrift-products" element={<ThriftProducts />} />
-        <Route path="/about-us" element={<About />} />
-        <Route
-          path="/product-description/:id/:productType"
-          element={<ProductDescription />}
-          loader={fetch}
-        />
-        <Route path="/shopping-cart" element={<ShoppingCart />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/add-product" element={<AddProduct />} />
-        <Route path="/sign-up" element={<Auth />} />
-        <Route path="/sign-in" element={<Auth />} />
-        <Route path="/account-profile" element={<AccountProfile />} />
-        <Route path="/user-thrift-products" element={<UserThriftProducts />} />
-      </Routes> */}
       <Outlet />
       {!shouldHideHeaderFooter && <Footer />}
-    </>
+    </div>
   );
 }
 
@@ -78,7 +60,6 @@ const router = createBrowserRouter(
       <Route
         path="product-description/:id/:productType"
         element={<ProductDescription />}
-        // loader={productDescriptionLoader}
       />
       <Route path="shopping-cart" element={<ShoppingCart />} />
       <Route path="wishlist" element={<Wishlist />} />
@@ -92,10 +73,5 @@ const router = createBrowserRouter(
 );
 
 export default function App() {
-  return (
-    // <Router>
-    //   <Layout />
-    // </Router>
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }

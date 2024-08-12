@@ -7,13 +7,7 @@ import { TiMinus, TiPlus } from "react-icons/ti";
 import { deleteFromShoppingCart } from "../../utils/api/shoppingCartApi";
 import { Fade } from "react-awesome-reveal";
 
-const ShoppingCard = ({
-  product,
-  // productTile,
-  // productImg,
-  // productPrice,
-  // productCategory,
-}) => {
+const ShoppingCard = ({ product, onRemove }) => {
   const { user } = useUser();
   const [quantity, setQuantity] = useState(1);
 
@@ -28,6 +22,9 @@ const ShoppingCard = ({
         productType
       );
       console.log(response.data);
+      if (response.data.success) {
+        onRemove(product.productId._id, productType);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -121,6 +118,22 @@ export default function ShoppingCart() {
     }
   };
 
+  const handleRemoveProduct = (productId, productType) => {
+    setShoppingCart((preShoppingCart) => {
+      const updatedFreshProducts = preShoppingCart.freshProducts.filter(
+        (product) => product.productId._id !== productId
+      );
+      const updatedThriftProducts = preShoppingCart.thriftProducts.filter(
+        (product) => product.productId._id !== productId
+      );
+
+      return {
+        freshProducts: updatedFreshProducts,
+        thriftProducts: updatedThriftProducts,
+      };
+    });
+  };
+
   useEffect(() => {
     if (isLoaded && user) {
       fetchShoppingCart();
@@ -137,22 +150,28 @@ export default function ShoppingCart() {
       </h1>
       <div className="grid md:grid-cols-3 gap-8 mt-16">
         <div className="md:col-span-2 space-y-4">
+          {shoppingCart.freshProducts.length == 0 &&
+            shoppingCart.thriftProducts.length == 0 && (
+              <div className="text-2xl font-bold">
+                Add Something to Your Shopping Cart...
+              </div>
+            )}
           {shoppingCart &&
             shoppingCart.freshProducts.map((product, index) => (
-              <ShoppingCard key={index} product={product} />
+              <ShoppingCard
+                key={index}
+                product={product}
+                onRemove={handleRemoveProduct}
+              />
             ))}
-          {/* <ShoppingCard
-            productTile="Product title"
-            productImg="image"
-            productPrice={200}
-            productCategory="category"
-          />
-          <ShoppingCard
-            productTile="Product title"
-            productImg="image"
-            productPrice={200}
-            productCategory="category"
-          /> */}
+          {shoppingCart &&
+            shoppingCart.thriftProducts.map((product, index) => (
+              <ShoppingCard
+                key={index}
+                product={product}
+                onRemove={handleRemoveProduct}
+              />
+            ))}
         </div>
         <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
           <h3 className="text-lg max-sm:text-base font-bold text-gray-800 border-b border-gray-300 pb-2">
@@ -277,8 +296,5 @@ export default function ShoppingCart() {
 
 ShoppingCard.propTypes = {
   product: PropTypes.object.isRequired,
-  // productTile: PropTypes.string.isRequired,
-  // productImg: PropTypes.string.isRequired,
-  // productPrice: PropTypes.number.isRequired,
-  // productCategory: PropTypes.string.isRequired,
+  onRemove: PropTypes.func.isRequired,
 };
