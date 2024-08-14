@@ -8,126 +8,11 @@ import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
 
-// const Filter = ({ selectedCategory, setSelectedCategory }) => {
-//   const [dropdownVisible, setDropdownVisible] = useState(false);
-
-//   const toggleDropdown = () => {
-//     setDropdownVisible(!dropdownVisible);
-//   };
-
-//   const handleCategoryClick = (category) => {
-//     setSelectedCategory(category);
-//     setDropdownVisible(false); // Close the dropdown after selection
-//   };
-//   return (
-//     <>
-//       <div>
-//         <button
-//           id="dropdownDefaultButton"
-//           onClick={toggleDropdown}
-//           className="text-black 0 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
-//           type="button"
-//         >
-//           <FaFilter />
-//           <svg
-//             className="w-2.5 h-2.5 ms-3"
-//             aria-hidden="true"
-//             xmlns="http://www.w3.org/2000/svg"
-//             fill="none"
-//             viewBox="0 0 10 6"
-//           >
-//             <path
-//               stroke="currentColor"
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               strokeWidth="2"
-//               d="m1 1 4 4 4-4"
-//             />
-//           </svg>
-//         </button>
-
-//         {/* Dropdown menu */}
-//         {dropdownVisible && (
-//           <div
-//             id="dropdown"
-//             className="z-10 absolute mt-4 bg-white divide-y divide-gray-100 rounded-lg shadow w-44"
-//           >
-//             <ul
-//               className="py-2 text-sm text-gray-700"
-//               aria-labelledby="dropdownDefaultButton"
-//             >
-//               <li>
-//                 <button
-//                   onClick={() => handleCategoryClick("All Category")}
-//                   className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
-//                     selectedCategory === "All Category"
-//                       ? "bg-gray-100 text-blue-600"
-//                       : ""
-//                   }`}
-//                 >
-//                   All Category
-//                 </button>
-//               </li>
-//               <li>
-//                 <button
-//                   onClick={() => handleCategoryClick("Clothing")}
-//                   className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
-//                     selectedCategory === "Clothing"
-//                       ? "bg-gray-100 text-blue-600"
-//                       : ""
-//                   }`}
-//                 >
-//                   Clothing
-//                 </button>
-//               </li>
-//               <li>
-//                 <button
-//                   onClick={() => handleCategoryClick("Electronics")}
-//                   className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
-//                     selectedCategory === "Electronics"
-//                       ? "bg-gray-100 text-blue-600"
-//                       : ""
-//                   }`}
-//                 >
-//                   Electronics
-//                 </button>
-//               </li>
-//               <li>
-//                 <button
-//                   onClick={() => handleCategoryClick("Footwear")}
-//                   className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
-//                     selectedCategory === "Footwear"
-//                       ? "bg-gray-100 text-blue-600"
-//                       : ""
-//                   }`}
-//                 >
-//                   Footwear
-//                 </button>
-//               </li>
-//               <li>
-//                 <button
-//                   onClick={() => handleCategoryClick("Books")}
-//                   className={`flex w-full px-4 py-2 hover:bg-gray-100 ${
-//                     selectedCategory === "Books"
-//                       ? "bg-gray-100 text-blue-600"
-//                       : ""
-//                   }`}
-//                 >
-//                   Books
-//                 </button>
-//               </li>
-//             </ul>
-//           </div>
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
 export default function FreshProducts() {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All Category");
   const [searchTerm, setSearchTerm] = useState("");
+
   const fetchedProducts = useLoaderData();
   // Fisher-Yates shuffle algorithm
   const shuffleArray = (array) => {
@@ -143,6 +28,7 @@ export default function FreshProducts() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (fetchedProducts?.freshProducts) {
       const shuffledProducts = shuffleArray(fetchedProducts.freshProducts);
       setProducts(shuffledProducts);
@@ -211,8 +97,3 @@ export default function FreshProducts() {
     </Fade>
   );
 }
-
-// Filter.propTypes = {
-//   selectedCategory: PropTypes.object.isRequired,
-//   setSelectedCategory: PropTypes.func.isRequired,
-// };

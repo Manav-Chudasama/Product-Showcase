@@ -10,6 +10,7 @@ import { addToShoppingCart } from "../../utils/api/shoppingCartApi";
 import { calculateRatings, getProductReviews } from "../../utils/api/reviewApi";
 import axios from "axios";
 import { Fade } from "react-awesome-reveal";
+import AlertBox from "../../utils/parts/AlertBox";
 
 export default function ProductDescription() {
   const { user } = useUser();
@@ -20,13 +21,13 @@ export default function ProductDescription() {
     totalReviews: 0,
     ratingCounts: [0, 0, 0, 0, 0], // [1-star, 2-star, 3-star, 4-star, 5-star]
   });
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const location = useLocation();
   const { product, productType } = location.state || {};
   console.log(typeof product, productType);
 
-  window.scrollTo(0, 0);
-
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchReviews();
   }, []);
 
@@ -39,8 +40,10 @@ export default function ProductDescription() {
     try {
       const response = await addToWishlist(user.id, product._id, productType);
       console.log(response.data);
+      showAlert(response.data.message, "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add product to wishlist.", "error");
     }
   };
 
@@ -52,8 +55,10 @@ export default function ProductDescription() {
         productType
       );
       console.log(response.data);
+      showAlert(response.data.message, "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add product to Shopping Cart.", "error");
     }
   };
 
@@ -67,6 +72,11 @@ export default function ProductDescription() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
   };
 
   // const calculateRatings = (reviews) => {
@@ -252,6 +262,13 @@ export default function ProductDescription() {
         ratingStats={ratingStats}
         renderStars={renderStars}
       />
+      {alert.message && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert({ message: "", type: "" })}
+        />
+      )}
     </div>
   );
 }

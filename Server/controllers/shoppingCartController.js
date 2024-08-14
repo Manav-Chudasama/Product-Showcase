@@ -89,11 +89,11 @@ export const addToShoppingCart = async (req, res) => {
     // Check if the product is already in the shopping cart
     if (
       shoppingCart[productField].some(
-        (item) => item.productId.toString() === validProductId
+        (item) => item.productId.toString() === validProductId._id.toString()
       )
     ) {
       return res
-        .status(400)
+        .status(200)
         .json({ success: false, message: "Product already in shopping cart." });
     }
 

@@ -3,9 +3,10 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import PropTypes from "prop-types";
 import { addToShoppingCart } from "../../utils/api/shoppingCartApi";
-import { deleteFromWishlist } from "../../utils/api/wishlistApi";
+import { deleteFromWishlist, getWishlist } from "../../utils/api/wishlistApi";
 import { Fade } from "react-awesome-reveal";
-const WishlistCard = ({ product, onRemove }) => {
+import AlertBox from "../../utils/parts/AlertBox";
+const WishlistCard = ({ product, onRemove, onAlert }) => {
   const { user } = useUser();
 
   const handleShoppingCart = async () => {
@@ -28,10 +29,12 @@ const WishlistCard = ({ product, onRemove }) => {
         console.log(result.data);
         if (result.data.success) {
           onRemove(product.productId._id, productType);
+          onAlert("Product added to Shopping Cart!", "success");
         }
       }
     } catch (error) {
       console.log(error);
+      onAlert("Failed to add product to cart!", "error");
     }
   };
 
@@ -48,9 +51,11 @@ const WishlistCard = ({ product, onRemove }) => {
       console.log(response.data);
       if (response.data.success) {
         onRemove(product.productId._id, productType);
+        onAlert("Product removed from wishlist!", "error");
       }
     } catch (error) {
       console.log(error);
+      onAlert("Failed to remove product from wishlist!", "error");
     }
   };
   return (
@@ -131,13 +136,12 @@ export default function Wishlist() {
     freshProducts: [],
     thriftProducts: [],
   });
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const { user, isLoaded } = useUser();
 
   const fetchWishlist = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:4000/api/wishlist/get-wishlist/${user.id}`
-      );
+      const response = await getWishlist(user.id);
       if (response.data.success) {
         console.log(response.data);
         setWishlist(response.data.wishlist);
@@ -161,6 +165,11 @@ export default function Wishlist() {
         thriftProducts: updatedThriftProducts,
       };
     });
+  };
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
   };
 
   useEffect(() => {
@@ -187,6 +196,7 @@ export default function Wishlist() {
                 key={index}
                 product={product}
                 onRemove={handleRemoveProduct}
+                onAlert={showAlert}
               />
             ))}
           {wishlist &&
@@ -195,8 +205,17 @@ export default function Wishlist() {
                 key={index}
                 product={product}
                 onRemove={handleRemoveProduct}
+                onAlert={showAlert}
               />
             ))}
+
+          {alert.message && (
+            <AlertBox
+              message={alert.message}
+              type={alert.type}
+              onClose={() => setAlert({ message: "", type: "" })}
+            />
+          )}
         </ul>
       </div>
     </Fade>
@@ -206,4 +225,5 @@ export default function Wishlist() {
 WishlistCard.propTypes = {
   product: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
+  onAlert: PropTypes.func.isRequired,
 };

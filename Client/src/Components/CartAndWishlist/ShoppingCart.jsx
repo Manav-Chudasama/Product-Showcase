@@ -6,8 +6,9 @@ import axios from "axios";
 import { TiMinus, TiPlus } from "react-icons/ti";
 import { deleteFromShoppingCart } from "../../utils/api/shoppingCartApi";
 import { Fade } from "react-awesome-reveal";
+import AlertBox from "../../utils/parts/AlertBox";
 
-const ShoppingCard = ({ product, onRemove }) => {
+const ShoppingCard = ({ product, onRemove, onAlert }) => {
   const { user } = useUser();
   const [quantity, setQuantity] = useState(1);
 
@@ -24,6 +25,7 @@ const ShoppingCard = ({ product, onRemove }) => {
       console.log(response.data);
       if (response.data.success) {
         onRemove(product.productId._id, productType);
+        onAlert("Product removed from shopping Cart!", "error");
       }
     } catch (error) {
       console.log(error);
@@ -97,6 +99,7 @@ export default function ShoppingCart() {
     freshProducts: [],
     thriftProducts: [],
   });
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const { user, isLoaded } = useUser();
 
   const fetchShoppingCart = async () => {
@@ -134,6 +137,11 @@ export default function ShoppingCart() {
     });
   };
 
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
+  };
+
   useEffect(() => {
     if (isLoaded && user) {
       fetchShoppingCart();
@@ -162,6 +170,7 @@ export default function ShoppingCart() {
                 key={index}
                 product={product}
                 onRemove={handleRemoveProduct}
+                onAlert={showAlert}
               />
             ))}
           {shoppingCart &&
@@ -170,8 +179,16 @@ export default function ShoppingCart() {
                 key={index}
                 product={product}
                 onRemove={handleRemoveProduct}
+                onAlert={showAlert}
               />
             ))}
+          {alert.message && (
+            <AlertBox
+              message={alert.message}
+              type={alert.type}
+              onClose={() => setAlert({ message: "", type: "" })}
+            />
+          )}
         </div>
         <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
           <h3 className="text-lg max-sm:text-base font-bold text-gray-800 border-b border-gray-300 pb-2">
@@ -297,4 +314,5 @@ export default function ShoppingCart() {
 ShoppingCard.propTypes = {
   product: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
+  onAlert: PropTypes.func.isRequired,
 };

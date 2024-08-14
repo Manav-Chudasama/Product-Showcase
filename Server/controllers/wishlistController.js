@@ -4,6 +4,7 @@ import userModel from "../models/userModel.js";
 import freshProductsModel from "../models/freshProductsModel.js";
 import thriftProductsModel from "../models/thriftProductsModel.js";
 import Wishlist from "../models/wishlistModel.js";
+import shoppingCartModel from "../models/shoppingCartModel.js";
 
 export const getWishlist = async (req, res) => {
   try {
@@ -79,19 +80,42 @@ export const addToWishlist = async (req, res) => {
     // Check if the wishlist document for the user already exists
     let wishlist = await Wishlist.findOne({ userId: validUserId });
 
+    // Check if the shopping cart document for the user already exists
+    let shoppingCart = await shoppingCartModel.findOne({ userId: validUserId });
+
     if (!wishlist) {
       // If no wishlist exists, create a new one
       wishlist = new Wishlist({ userId: validUserId });
     }
 
-    // Check if the product is already in the wishlist
+    // console.log(wishlist[productField][0].productId.toString());
+    // console.log(validProductId._id.toString());
+    // wishlist[productField].some((item) => {
+    //   console.log("items: ", item.productId.toString());
+    //   item.productId.toString() == validProductId._id.toString()
+    //     ? console.log(true)
+    //     : console.log(false);
+    // });
+
+    // Check if the product is already in the shopping cart
     if (
-      wishlist[productField].some(
-        (item) => item.productId.toString() === validProductId
+      shoppingCart[productField].some(
+        (item) => item.productId.toString() === validProductId._id.toString()
       )
     ) {
       return res
-        .status(400)
+        .status(200)
+        .json({ success: false, message: "Product already in shopping cart." });
+    }
+
+    // Check if the product is already in the wishlist
+    if (
+      wishlist[productField].some(
+        (item) => item.productId.toString() === validProductId._id.toString()
+      )
+    ) {
+      return res
+        .status(200)
         .json({ success: false, message: "Product already in wishlist." });
     }
 

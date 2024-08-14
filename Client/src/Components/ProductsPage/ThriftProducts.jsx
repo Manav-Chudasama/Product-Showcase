@@ -110,6 +110,7 @@ export default function ThriftProducts() {
   // };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (fetchedProducts?.thriftProducts) {
       setProducts(fetchedProducts.thriftProducts);
     }

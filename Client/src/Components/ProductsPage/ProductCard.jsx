@@ -6,12 +6,17 @@ import Logo from "../../assets/Logo.png";
 import { SiCodefresh } from "react-icons/si";
 import { GiAbstract014 } from "react-icons/gi";
 import { MdOutlineCategory } from "react-icons/md";
-import { FaStar, FaRegHeart, FaStarHalfAlt } from "react-icons/fa";
+import { FaStar, FaRegHeart, FaStarHalfAlt, FaHeart } from "react-icons/fa";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
-import { addToWishlist } from "../../utils/api/wishlistApi";
+import {
+  addToWishlist,
+  deleteFromWishlist,
+  getWishlist,
+} from "../../utils/api/wishlistApi";
 import { addToShoppingCart } from "../../utils/api/shoppingCartApi";
 import { calculateRatings, getProductReviews } from "../../utils/api/reviewApi";
+import AlertBox from "../../utils/parts/AlertBox";
 // import { getProductReviews } from "../../utils/api/reviewApi";
 
 export default function ProductCard({ product, productType }) {
@@ -22,6 +27,8 @@ export default function ProductCard({ product, productType }) {
     totalReviews: 0,
     ratingCounts: [0, 0, 0, 0, 0], // [1-star, 2-star, 3-star, 4-star, 5-star]
   });
+  const [alert, setAlert] = useState({ message: "", type: "" });
+  const [isInWishlist, setIsInWishlist] = useState(false);
   const navigate = useNavigate();
   const handleClick = (event) => {
     navigate(`/product-description/${product._id}/${productType}`, {
@@ -29,13 +36,38 @@ export default function ProductCard({ product, productType }) {
     });
   };
 
+  const checkWislist = async () => {
+    const response = await getWishlist(user.id);
+    const { freshProducts } = response.data.wishlist;
+    // console.log(freshProducts);
+
+    const isProductInWishlist = freshProducts.some(
+      (item) => item.productId._id === product._id
+    );
+
+    setIsInWishlist(isProductInWishlist);
+  };
+
   const handleAddToWishlist = async () => {
-    // console.log("product: ", product._id, "userid: ", user.id);
+    console.log("product: ", product._id, "userid: ", user.id);
     try {
-      const response = await addToWishlist(user.id, product._id, productType);
-      console.log(response.data);
+      if (isInWishlist) {
+        const response = await deleteFromWishlist(
+          user.id,
+          product._id,
+          productType
+        );
+        setIsInWishlist(false);
+        showAlert(response.data.message, "success");
+      } else {
+        const response = await addToWishlist(user.id, product._id, productType);
+        console.log(response.data);
+        setIsInWishlist(true);
+        showAlert(response.data.message, "success");
+      }
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add product to wishlist.", "error");
     }
   };
 
@@ -47,16 +79,19 @@ export default function ProductCard({ product, productType }) {
         product._id,
         productType
       );
-      console.log(response.data);
+      console.log(response.data.success);
+
+      showAlert(response.data.message, "success");
     } catch (error) {
       console.log(error);
+      showAlert("Failed to add product to Shopping Cart.", "error");
     }
   };
 
   const fetchReviews = async () => {
     try {
       const response = await getProductReviews(product, productType);
-      console.log(response.data);
+      // console.log(response.data);
       setReviews(response.data.reviews);
       const stats = calculateRatings(response.data.reviews);
       setRatingStats(stats);
@@ -87,8 +122,14 @@ export default function ProductCard({ product, productType }) {
     );
   };
 
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
+  };
+
   useEffect(() => {
     fetchReviews();
+    checkWislist();
   }, []);
 
   return (
@@ -123,7 +164,7 @@ export default function ProductCard({ product, productType }) {
                 }}
               >
                 <span className="sr-only">Add to Favorites</span>
-                <FaRegHeart />
+                {isInWishlist ? <FaHeart color="red" /> : <FaRegHeart />}
               </button>
             </div>
           </div>
@@ -199,12 +240,18 @@ export default function ProductCard({ product, productType }) {
           Add to cart
         </button>
       </div>
+      {alert.message && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert({ message: "", type: "" })}
+        />
+      )}
     </div>
   );
 }
 
 ProductCard.propTypes = {
-  // key: PropTypes.number,
   product: PropTypes.object.isRequired,
   productType: PropTypes.string.isRequired,
 };
