@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import fs from "fs";
 
-import { FileUploadHelper } from "../middleware/FileUploadHelper.js";
+import { CreateFileUploadHelper } from "../middleware/FileUploadHelper.js";
 
 import {
   getAllFreshProducts,
@@ -17,7 +17,7 @@ const router = express.Router();
 router.get("/", getAllFreshProducts);
 
 // create a new product
-router.post("/create-freshProduct", FileUploadHelper, createFreshProduct);
+router.post("/create-freshProduct", CreateFileUploadHelper, createFreshProduct);
 
 //update a product
 router.put("/update-freshProduct", updateFreshProduct);

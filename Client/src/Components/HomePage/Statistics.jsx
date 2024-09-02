@@ -24,8 +24,8 @@ export default function Statistics() {
       const response = await axios.get(
         "http://localhost:4000/api/fresh-products/"
       );
-      console.log(response.data.data);
-      setTotalFreshproducts(response.data.data.length);
+      // console.log(response.data.freshProducts);
+      setTotalFreshproducts(response.data.freshProducts.length);
     } catch (error) {
       console.log(error.message);
     }
@@ -33,7 +33,10 @@ export default function Statistics() {
 
   const fetchUploadedProducts = async () => {
     try {
-      const response = await axios.get("");
+      const response = await axios.get(
+        "http://localhost:4000/api/thrift-products/"
+      );
+      setTotalUploadedProducts(response.data.thriftProducts.length);
     } catch (error) {
       console.log(error.message);
     }
@@ -42,6 +45,7 @@ export default function Statistics() {
   useEffect(() => {
     fetchusers();
     fetchFreshProducts();
+    fetchUploadedProducts();
   }, [totalUsers, totalFreshProducts]);
   return (
     <div>
@@ -63,7 +67,7 @@ export default function Statistics() {
               </div>
               <div className="p-4 sm:w-1/4 w-1/2">
                 <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
-                  35
+                  {totalUploadedProducts}
                 </h2>
                 <p className="leading-relaxed">Products Uploaded</p>
               </div>
@@ -71,7 +75,7 @@ export default function Statistics() {
                 <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
                   4
                 </h2>
-                <p className="leading-relaxed">Products</p>
+                <p className="leading-relaxed">Products Purchased</p>
               </div>
             </div>
           </div>

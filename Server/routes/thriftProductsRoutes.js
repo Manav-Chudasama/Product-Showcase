@@ -2,7 +2,10 @@ import express from "express";
 import multer from "multer";
 import fs from "fs";
 
-import { FileUploadHelper } from "../middleware/FileUploadHelper.js";
+import {
+  CreateFileUploadHelper,
+  UpdateProductImagesHelper,
+} from "../middleware/FileUploadHelper.js";
 import {
   getAllThriftProducts,
   userThriftProducts,
@@ -20,10 +23,18 @@ router.get("/", getAllThriftProducts);
 router.get("/:userId", userThriftProducts);
 
 // create a thrift product
-router.post("/create-thriftProduct", FileUploadHelper, createThriftProduct);
+router.post(
+  "/create-thriftProduct",
+  CreateFileUploadHelper,
+  createThriftProduct
+);
 
 //update a product
-router.put("/update-thriftProduct", updateThriftProduct);
+router.post(
+  "/update-thriftProduct",
+  UpdateProductImagesHelper,
+  updateThriftProduct
+);
 
 // delete a product
 router.delete("/delete-thriftProduct", deleteThriftProduct);

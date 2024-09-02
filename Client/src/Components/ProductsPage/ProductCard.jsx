@@ -6,7 +6,13 @@ import Logo from "../../assets/Logo.png";
 import { SiCodefresh } from "react-icons/si";
 import { GiAbstract014 } from "react-icons/gi";
 import { MdOutlineCategory } from "react-icons/md";
-import { FaStar, FaRegHeart, FaStarHalfAlt, FaHeart } from "react-icons/fa";
+import {
+  FaStar,
+  FaRegHeart,
+  FaStarHalfAlt,
+  FaHeart,
+  FaRegEdit,
+} from "react-icons/fa";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import {
@@ -19,7 +25,11 @@ import { calculateRatings, getProductReviews } from "../../utils/api/reviewApi";
 import AlertBox from "../../utils/parts/AlertBox";
 // import { getProductReviews } from "../../utils/api/reviewApi";
 
-export default function ProductCard({ product, productType }) {
+export default function ProductCard({
+  product,
+  productType,
+  userThriftProduct,
+}) {
   const { user } = useUser();
   const [reviews, setReviews] = useState([]);
   const [ratingStats, setRatingStats] = useState({
@@ -30,9 +40,15 @@ export default function ProductCard({ product, productType }) {
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [isInWishlist, setIsInWishlist] = useState(false);
   const navigate = useNavigate();
-  const handleClick = (event) => {
+  const handleProductdescription = (event) => {
     navigate(`/product-description/${product._id}/${productType}`, {
       state: { product, productType },
+    });
+  };
+
+  const handleUserProductEdit = (event) => {
+    navigate(`/user-edit-product/${product._id}`, {
+      state: { product },
     });
   };
 
@@ -72,7 +88,7 @@ export default function ProductCard({ product, productType }) {
   };
 
   const handleAddToShoppingCart = async () => {
-    console.log("shopping");
+    // console.log("shopping");
     try {
       const response = await addToShoppingCart(
         user.id,
@@ -135,7 +151,7 @@ export default function ProductCard({ product, productType }) {
   return (
     <div
       className="flex flex-col justify-between rounded-lg border border-gray-200 bg-white p-6 shadow-sm cursor-pointer"
-      onClick={handleClick}
+      onClick={handleProductdescription}
     >
       <div>
         <div className="h-56 w-full">
@@ -212,33 +228,47 @@ export default function ProductCard({ product, productType }) {
         <p className="text-2xl font-bold leading-tight text-gray-900 dark:text-white">
           ₹{product.price}
         </p>
-        <button
-          type="button"
-          className="inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none hover:ring-4  hover:ring-blue-200"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent navigating when clicking on the add to cart button
-            handleAddToShoppingCart();
-          }}
-        >
-          <svg
-            className="-ms-2 me-2 h-5 w-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width={24}
-            height={24}
-            fill="none"
-            viewBox="0 0 24 24"
+        {userThriftProduct ? (
+          <button
+            type="button"
+            className="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-white hover:outline-none bg-black rounded-lg border border-gray-200 focus:z-10 hover:ring-4 hover:ring-gray-100 hover:shadow-[0_4px_8px_0_rgba(0,0,0,0.2)]"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent navigating when clicking on the Edit Product button
+              handleUserProductEdit();
+            }}
           >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
-            />
-          </svg>
-          Add to cart
-        </button>
+            <FaRegEdit className="mr-2" />
+            Edit Product
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none hover:ring-4  hover:ring-blue-200"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent navigating when clicking on the add to cart button
+              handleAddToShoppingCart();
+            }}
+          >
+            <svg
+              className="-ms-2 me-2 h-5 w-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width={24}
+              height={24}
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6"
+              />
+            </svg>
+            Add to cart
+          </button>
+        )}
       </div>
       {alert.message && (
         <AlertBox
@@ -254,4 +284,5 @@ export default function ProductCard({ product, productType }) {
 ProductCard.propTypes = {
   product: PropTypes.object.isRequired,
   productType: PropTypes.string.isRequired,
+  userThriftProduct: PropTypes.bool,
 };

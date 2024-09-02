@@ -9,9 +9,7 @@ export const createUser = async (req, res) => {
     const payloadString = req.body.toString();
     const svixHeaders = req.headers;
 
-    const wh = new Webhook(
-      process.env.CREATE_USER || "whsec_vp+oSW2imKmkP8Z4LpNPL0tEq/tTbLQO"
-    );
+    const wh = new Webhook(process.env.CREATE_USER);
     const evt = wh.verify(payloadString, svixHeaders);
 
     const { id, ...attributes } = evt.data;
@@ -66,7 +64,7 @@ export const updateUser = async (req, res) => {
     const svixHeaders = req.headers;
 
     // Initialize the webhook with your secret key
-    const wh = new Webhook("whsec_qRza9ctyPYohMzdc46IFi0PCCvwX90lv");
+    const wh = new Webhook(process.env.UPDATE_USER);
     const evt = wh.verify(payloadString, svixHeaders);
 
     const { id, ...attributes } = evt.data;
@@ -115,7 +113,7 @@ export const deleteUser = async (req, res) => {
     const svixHeaders = req.headers;
 
     // Initialize the webhook with your secret key
-    const wh = new Webhook("whsec_OwGcV3d30bTYqcp1LI5q47K/0ns5MowF");
+    const wh = new Webhook(process.env.DELETE_USER);
     const evt = wh.verify(payloadString, svixHeaders);
 
     const { id } = evt.data;

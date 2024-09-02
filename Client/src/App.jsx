@@ -64,6 +64,7 @@ const router = createBrowserRouter(
       <Route path="shopping-cart" element={<ShoppingCart />} />
       <Route path="wishlist" element={<Wishlist />} />
       <Route path="add-product" element={<AddProduct />} />
+      <Route path="user-edit-product/:id" element={<AddProduct />} />
       <Route path="sign-up" element={<Auth />} />
       <Route path="sign-in" element={<Auth />} />
       <Route path="account-profile" element={<AccountProfile />} />

@@ -15,13 +15,16 @@ export default function FeaturedProducts() {
           <h1 className="sm:text-3xl text-2xl text-blue-600 font-bold lg:w-1/3 lg:mb-0 mb-4">
             <Slide direction="left">Featured Products</Slide>
           </h1>
-          <p className="lg:pl-6 lg:w-2/3 mx-auto leading-relaxed text-base">
-            <Fade direction="up">
+          <Fade
+            direction="up"
+            className="lg:pl-6 lg:w-2/3 mx-auto leading-relaxed text-base"
+          >
+            <p>
               Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical
               gentrify, subway tile poke farm-to-table. Franzen you probably
               havent heard of them man bun deep jianbing selfies heirloom.
-            </Fade>
-          </p>
+            </p>
+          </Fade>
         </div>
         <div className="flex flex-col md:flex-row flex-wrap md:-m-2 -m-1">
           <div className="flex flex-wrap md:w-1/2">

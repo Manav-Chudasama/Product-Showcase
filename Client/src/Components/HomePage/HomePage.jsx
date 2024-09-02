@@ -11,8 +11,8 @@ import { Fade } from "react-awesome-reveal";
 export default function HomePage() {
   return (
     <div>
-      <Fade>
-        <ClerkLoaded>
+      <ClerkLoaded>
+        <Fade>
           <HeroCrousel />
           <Overview />
           <FeaturedProducts />
@@ -20,8 +20,8 @@ export default function HomePage() {
           <ProductPromo />
           <ContactUs />
           <Statistics />
-        </ClerkLoaded>
-      </Fade>
+        </Fade>
+      </ClerkLoaded>
     </div>
   );
 }

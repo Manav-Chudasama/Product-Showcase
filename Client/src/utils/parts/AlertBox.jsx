@@ -6,7 +6,7 @@ export default function AlertBox({ message, type, onClose }) {
     <div
       className={`${
         type === "success" ? "bg-green-200" : "bg-red-200"
-      } fixed bottom-2 left-2 px-6 py-4 mx-2 my-4 rounded-md text-lg flex items-center mx-auto max-w-lg`}
+      } fixed bottom-2 left-2 px-6 py-4 my-4 rounded-md text-lg flex items-center mx-auto max-w-lg z-50`}
     >
       {type == "success" ? (
         <svg

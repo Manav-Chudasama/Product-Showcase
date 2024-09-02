@@ -12,13 +12,16 @@ export default function ContactUs() {
               <h1 className="sm:text-3xl text-2xl text-blue-600 font-bold title-font mb-4">
                 <Slide direction="down">Contact Us</Slide>
               </h1>
-              <p className="lg:w-2/3 mx-auto leading-relaxed text-sm md:text-base">
-                <Slide direction="up">
+              <Slide
+                direction="up"
+                className="lg:w-2/3 mx-auto leading-relaxed text-sm md:text-base"
+              >
+                <p>
                   Need assistance? Our friendly team is here to help! Reach out
                   for inquiries, support, or feedback. We're dedicated to
                   ensuring your best shopping experience. Let's connect!
-                </Slide>
-              </p>
+                </p>
+              </Slide>
             </div>
             <div className="lg:w-1/2 md:w-2/3 mx-auto">
               <div className="flex flex-wrap -m-2">

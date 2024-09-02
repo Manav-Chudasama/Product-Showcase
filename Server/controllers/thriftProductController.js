@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import ThriftproductModel from "../models/thriftProductsModel.js";
+import thriftProductsModel from "../models/thriftProductsModel.js";
 
 // fetch all the thrift products
 export const getAllThriftProducts = async (req, res) => {
@@ -42,8 +43,8 @@ export const userThriftProducts = async (req, res) => {
 // create a new thrift product
 export const createThriftProduct = async (req, res) => {
   try {
-    console.log("image:", req.body);
-    console.log("files:", req.files);
+    // console.log("image:", req.body);
+    // console.log("files:", req.files);
 
     const { userId, username, title, description, category, price } = req.body;
 
@@ -79,18 +80,13 @@ export const createThriftProduct = async (req, res) => {
     });
 
     // Save the product to the database
-    await newProduct
-      .save()
-      .then(() => {
-        console.log("Product saved successfully!");
-        res.status(200).send({
-          success: true,
-          message: "Product created successfully!",
-        });
-      })
-      .catch((error) => {
-        console.error("Error saving product:", error);
-      });
+    await newProduct.save();
+
+    console.log("Product saved successfully!");
+    res.status(200).send({
+      success: true,
+      message: "Product created successfully!",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -101,7 +97,57 @@ export const createThriftProduct = async (req, res) => {
 };
 
 // update a thrift product
-export const updateThriftProduct = async (req, res) => {};
+export const updateThriftProduct = async (req, res) => {
+  console.log("enter: ", req.body);
+
+  try {
+    // const { productId } = req.params;
+    const { userId, username, productId, title, description, category, price } =
+      req.body;
+    const updatedFields = { title, description, category, price };
+
+    // If new images were uploaded, add the paths to the update fields
+    if (req.files && req.files.length > 0) {
+      const imagePaths = req.files.map(
+        (file) => file.destination + `/${file.originalname}`
+      );
+
+      if (req.files) {
+        updatedFields.images = imagePaths;
+      }
+    }
+
+    if (req.body.images) {
+      console.log(req.body.images);
+    }
+
+    ThriftproductModel.findByIdAndUpdate();
+    let id = mongoose.Types.ObjectId.createFromHexString(productId);
+    console.log(id, productId);
+
+    const updatedProduct = await ThriftproductModel.findByIdAndUpdate(
+      productId,
+      updatedFields
+    );
+
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully!",
+    });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the product",
+    });
+  }
+};
 
 // delete a thrift product
 export const deleteThriftProduct = async (req, res) => {};

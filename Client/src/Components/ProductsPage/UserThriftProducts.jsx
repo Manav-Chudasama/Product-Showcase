@@ -43,6 +43,7 @@ export default function UserThriftProducts() {
                   key={index}
                   product={product}
                   productType="Thrift Product"
+                  userThriftProduct={true}
                 />
               ))}
           </div>

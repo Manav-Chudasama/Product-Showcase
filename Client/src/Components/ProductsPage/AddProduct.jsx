@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { Fade } from "react-awesome-reveal";
+import { useLocation } from "react-router-dom";
 export default function AddProduct() {
   const { user } = useUser();
+  const location = useLocation();
   const [productData, setProductData] = useState({
     title: "",
     description: "",
@@ -11,6 +13,7 @@ export default function AddProduct() {
     price: 0,
     images: [],
   });
+  const [isUpdate, setIsUpdate] = useState(false);
   const [file, setFile] = useState([]);
   const reader = new FileReader();
   const fileInputRef = useRef(null);
@@ -64,9 +67,26 @@ export default function AddProduct() {
     // Use useEffect or log inside a callback to see updated state immediately
   };
 
+  // If product data is passed via location state, set it to productData
   useEffect(() => {
-    console.log("Updated images:", productData.images);
-  }, [productData.images]);
+    if (location.state && location.state.product) {
+      const { product } = location.state;
+      setProductData({
+        title: product.title,
+        description: product.description,
+        category: product.category,
+        price: product.price,
+        images: product.images || [],
+      });
+      console.log(product._id);
+      const images = [];
+      product.images.map((image) =>
+        images.push("http://localhost:4000/" + image)
+      );
+      setFile(images);
+    }
+    window.scrollTo(0, 0);
+  }, [location.state, location.state?.product]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -77,28 +97,16 @@ export default function AddProduct() {
     const price = event.target[3].value;
     const description = event.target[4].value;
 
-    console.log(title, category, price, description, productData.images);
-    console.log(
-      "noice",
-      productData.title,
-      productData.category,
-      productData.price,
-      productData.description
-    );
-
-    // if (
-    //   !productData.title ||
-    //   !productData.description ||
-    //   !productData.category ||
-    //   !productData.price ||
-    //   !productData.images
-    // ) {
-    //   alert("please fill in all the required fields");
-    //   return;
-    // }
-
     try {
       const formData = new FormData();
+
+      if (isUpdate) {
+        console.log(location.state.product._id);
+        formData.append(
+          "productId",
+          location.state.product?._id ?? "Product not loaded"
+        ); // Append the product ID for the update request
+      }
 
       formData.append("userId", user.id);
       formData.append("username", user?.username ?? user.fullName);
@@ -110,34 +118,34 @@ export default function AddProduct() {
         formData.append("images", image);
       });
 
-      await axios
-        .post(
-          "http://localhost:4000/api/thrift-products/create-thriftProduct",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then((response) => {
-          console.log("Product created successfully:", response.data.success);
-          if (response.data.success) {
-            setProductData({
-              title: "",
-              description: "",
-              category: "",
-              price: 0,
-              images: [],
-            });
-            setFile([]);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      // Log FormData contents
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
-      // console.log("Product created successfully:", response.data);
+      const url = isUpdate
+        ? "http://localhost:4000/api/thrift-products/update-thriftProduct"
+        : "http://localhost:4000/api/thrift-products/create-thriftProduct";
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // console.log("Product created successfully:", response.data.success);
+      if (response.data.success) {
+        setProductData({
+          title: "",
+          description: "",
+          category: "",
+          price: 0,
+          images: [],
+        });
+        setFile([]);
+      }
+
+      console.log("Product created successfully:", response.data);
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -148,7 +156,9 @@ export default function AddProduct() {
       <section className="bg-white">
         <div className="py-2 px-4 mx-auto max-w-7xl lg:py-8">
           <h2 className="mb-4 text-3xl text-center font-bold text-gray-900">
-            Add a new product
+            {location.state?.product
+              ? "Edit Your Product"
+              : "Add a New Product"}
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -166,6 +176,7 @@ export default function AddProduct() {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Type product name"
                   required={true}
+                  // disabled={productData.title.length > 0 ? true : false}
                   value={productData.title}
                   onChange={handleInputChange}
                 />
@@ -185,7 +196,7 @@ export default function AddProduct() {
                   id="images"
                   className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full"
                   // value={productData.images == [] ? }
-                  required={true}
+                  required={productData.images.length > 0 ? false : true}
                   multiple={true}
                   onChange={handleFileChange}
                 />
@@ -268,12 +279,24 @@ export default function AddProduct() {
                 />
               </div>
             </div>
-            <button
-              type="submit"
-              className="flex mx-auto items-center mt-4 sm:mt-6 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 shadow-lg shadow-blue-500/50  font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2"
-            >
-              Add product
-            </button>
+            <div className="flex justify-center space-x-4">
+              <button
+                type="submit"
+                onClick={() => setIsUpdate(false)} // Set to create mode
+                className="flex items-center mt-4 sm:mt-6 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 shadow-lg shadow-blue-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2"
+              >
+                Add Product
+              </button>
+              {location.state?.product && (
+                <button
+                  type="submit"
+                  onClick={() => setIsUpdate(true)} // Set to update mode
+                  className="flex items-center mt-4 sm:mt-6 text-white bg-gradient-to-r bg-black hover:bg-gradient-to-br focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2"
+                >
+                  Update Product
+                </button>
+              )}
+            </div>
           </form>
         </div>
       </section>

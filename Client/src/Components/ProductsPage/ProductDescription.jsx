@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, FreeMode, Thumbs, EffectFade } from "swiper/modules";
 import ProductReviews from "./ProductReviews";
 import { useParams, useLocation } from "react-router-dom";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { FaRegHeart, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { addToWishlist } from "../../utils/api/wishlistApi";
 import { useUser } from "@clerk/clerk-react";
 import { addToShoppingCart } from "../../utils/api/shoppingCartApi";
@@ -24,7 +24,7 @@ export default function ProductDescription() {
   const [alert, setAlert] = useState({ message: "", type: "" });
   const location = useLocation();
   const { product, productType } = location.state || {};
-  console.log(typeof product, productType);
+  // console.log(typeof product, productType);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -206,22 +206,7 @@ export default function ProductDescription() {
                     className="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-white hover:outline-none bg-black rounded-lg border border-gray-200 focus:z-10 hover:ring-4 hover:ring-gray-100 hover:shadow-[0_4px_8px_0_rgba(0,0,0,0.2)]"
                     onClick={handleWishlist}
                   >
-                    <svg
-                      className="w-5 h-5 -ms-2 me-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-                      />
-                    </svg>
+                    <FaRegHeart className="mr-2" />
                     Add to favorites
                   </button>
                   <button

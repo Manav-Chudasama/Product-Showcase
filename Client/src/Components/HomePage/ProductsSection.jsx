@@ -112,15 +112,15 @@ export default function ProductsSection() {
           </Fade>
         </h1>
 
-        <p className="text-sm md:text-lg m-2 text-justify">
-          <Fade direction="right">
+        <Fade direction="right" className="text-sm md:text-lg m-2 text-justify">
+          <p>
             Unlock amazing savings with our hand-picked promotional offers! From
             cutting-edge electronics to stylish apparel and must-read books, our
             exclusive deals offer top-quality items at unbeatable prices. Act
             now—these offers are available for a limited time only. Shop today
             and experience ultimate value!
-          </Fade>
-        </p>
+          </p>
+        </Fade>
 
         <Link to="/fresh-products">
           <AttentionSeeker effect="bounce">

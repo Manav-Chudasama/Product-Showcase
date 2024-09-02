@@ -36,7 +36,6 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
-
 app.use(
   cors({
     origin: "*",
@@ -55,5 +54,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(process.env.PORT || 4000, () => {
-  console.log(`Server is listening on ${process.env.PORT}`);
+  console.log(`Server is listening on ${process.env.PORT || 4000}`);
 });
