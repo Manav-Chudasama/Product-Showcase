@@ -4,13 +4,41 @@ import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 
 import { TiMinus, TiPlus } from "react-icons/ti";
-import { deleteFromShoppingCart } from "../../utils/api/shoppingCartApi";
+import {
+  deleteFromShoppingCart,
+  setProductQuantity,
+} from "../../utils/api/shoppingCartApi";
 import { Fade } from "react-awesome-reveal";
 import AlertBox from "../../utils/parts/AlertBox";
 
-const ShoppingCard = ({ product, onRemove, onAlert }) => {
+const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
+  console.log(product.productId.quantity);
+
   const { user } = useUser();
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(product.productId.quantity);
+  const [productTotalPrice, setProductTotalPrice] = useState(
+    product.productId.price
+  );
+
+  const handleQuantityChange = async (newQuantity) => {
+    const productType = !product.productId.username
+      ? "Fresh Product"
+      : "Thrift Product";
+    if (newQuantity < 1) return; // Prevent negative quantity
+    setQuantity(newQuantity);
+    setProductTotalPrice(newQuantity * product.productId.price);
+
+    onUpdateQuantity(product.productId._id, newQuantity);
+    const response = await setProductQuantity(
+      product.productId._id,
+      productType,
+      newQuantity
+    );
+
+    if (response.data.success) {
+      console.log(response.data.message);
+    }
+  };
 
   const handleDelteFromShoppingCart = async () => {
     try {
@@ -31,6 +59,12 @@ const ShoppingCard = ({ product, onRemove, onAlert }) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    handleQuantityChange(
+      isNaN(product.productId.quantity) ? 1 : product.productId.quantity
+    );
+  }, []);
 
   return (
     <>
@@ -75,15 +109,14 @@ const ShoppingCard = ({ product, onRemove, onAlert }) => {
         </div>
         <div className="ml-auto">
           <h4 className="text-lg max-sm:text-base font-bold text-gray-800">
-            ${product.productId.price}
+            ₹{productTotalPrice}
           </h4>
           <div className="mt-6 flex items-center px-3 py-1.5 border border-gray-300 text-gray-800 text-xs outline-none bg-transparent rounded-md">
-            <button onClick={(e) => setQuantity(quantity - 1)}>
+            <button onClick={(e) => handleQuantityChange(quantity - 1)}>
               <TiMinus className="text-[1.5em] hover:text-red-600" />
             </button>
-
             <span className="mx-3 font-bold">{quantity}</span>
-            <button onClick={(e) => setQuantity(quantity + 1)}>
+            <button onClick={(e) => handleQuantityChange(quantity + 1)}>
               <TiPlus className="text-[1.5em] hover:text-green-500" />
             </button>
           </div>
@@ -101,6 +134,42 @@ export default function ShoppingCart() {
   });
   const [alert, setAlert] = useState({ message: "", type: "" });
   const { user, isLoaded } = useUser();
+  const [subtotal, setSubtotal] = useState(0);
+  const shippingCost = 2.0;
+  const taxRate = 0.02; // Assuming 2% tax rate
+
+  const calculateSubtotal = (cart) => {
+    let newSubtotal = 0;
+    cart.freshProducts.forEach((product) => {
+      newSubtotal += product.quantity * product.productId.price;
+    });
+    cart.thriftProducts.forEach((product) => {
+      newSubtotal += product.quantity * product.productId.price;
+    });
+    return newSubtotal;
+  };
+
+  const handleUpdateQuantity = (productId, newQuantity) => {
+    setShoppingCart((prevCart) => {
+      const updatedFreshProducts = prevCart.freshProducts.map((product) =>
+        product.productId._id === productId
+          ? { ...product, quantity: newQuantity }
+          : product
+      );
+      const updatedThriftProducts = prevCart.thriftProducts.map((product) =>
+        product.productId._id === productId
+          ? { ...product, quantity: newQuantity }
+          : product
+      );
+
+      const updatedCart = {
+        freshProducts: updatedFreshProducts,
+        thriftProducts: updatedThriftProducts,
+      };
+      setSubtotal(calculateSubtotal(updatedCart));
+      return updatedCart;
+    });
+  };
 
   const fetchShoppingCart = async () => {
     try {
@@ -147,6 +216,8 @@ export default function ShoppingCart() {
       fetchShoppingCart();
     }
   }, [isLoaded, user]);
+
+  const total = subtotal + shippingCost + subtotal * taxRate;
   return (
     <Fade
       delay={200}
@@ -171,6 +242,7 @@ export default function ShoppingCart() {
                 product={product}
                 onRemove={handleRemoveProduct}
                 onAlert={showAlert}
+                onUpdateQuantity={handleUpdateQuantity}
               />
             ))}
           {shoppingCart &&
@@ -180,6 +252,7 @@ export default function ShoppingCart() {
                 product={product}
                 onRemove={handleRemoveProduct}
                 onAlert={showAlert}
+                onUpdateQuantity={handleUpdateQuantity}
               />
             ))}
           {alert.message && (
@@ -278,17 +351,24 @@ export default function ShoppingCart() {
           </form>
           <ul className="text-gray-800 mt-6 space-y-3">
             <li className="flex flex-wrap gap-4 text-sm">
-              Subtotal <span className="ml-auto font-bold">$200.00</span>
+              Subtotal{" "}
+              <span className="ml-auto font-bold">₹{subtotal.toFixed(2)}</span>
             </li>
             <li className="flex flex-wrap gap-4 text-sm">
-              Shipping <span className="ml-auto font-bold">$2.00</span>
+              Shipping{" "}
+              <span className="ml-auto font-bold">
+                ₹{shippingCost.toFixed(2)}
+              </span>
             </li>
             <li className="flex flex-wrap gap-4 text-sm">
-              Tax <span className="ml-auto font-bold">$4.00</span>
+              Tax{" "}
+              <span className="ml-auto font-bold">
+                ₹{(subtotal * taxRate).toFixed(2)}
+              </span>
             </li>
             <hr className="border-gray-300" />
             <li className="flex flex-wrap gap-4 text-sm font-bold">
-              Total <span className="ml-auto">$206.00</span>
+              Total <span className="ml-auto">₹{total.toFixed(2)}</span>
             </li>
           </ul>
           <div className="mt-6 space-y-3">
@@ -315,4 +395,5 @@ ShoppingCard.propTypes = {
   product: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
   onAlert: PropTypes.func.isRequired,
+  onUpdateQuantity: PropTypes.func.isRequired,
 };

@@ -77,7 +77,9 @@ const WishlistCard = ({ product, onRemove, onAlert }) => {
               </p>
             </div>
             <div className="text-right">
-              <p className="text-lg font-semibold">{product.productId.price}</p>
+              <p className="text-lg font-semibold">
+                ₹{product.productId.price}
+              </p>
               {/* <p className="text-sm line-through text-gray-600">75.50€</p> */}
             </div>
           </div>

@@ -46,3 +46,25 @@ export const deleteFromShoppingCart = async (
     console.log(error);
   }
 };
+
+export const setProductQuantity = async (productId, productType, quantity) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/api/shopping-cart/update-Product-quantity",
+      {
+        productId,
+        productType: productType == "Fresh Product" ? "fresh" : "thrift",
+        quantity,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

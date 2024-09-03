@@ -4,6 +4,7 @@ import {
   addToShoppingCart,
   getShoppingCart,
   deleteFromShoppingCart,
+  setProductQuantity,
 } from "../controllers/shoppingCartController.js";
 
 const router = express.Router();
@@ -16,5 +17,8 @@ router.get("/get-shopping-cart/:userId", getShoppingCart);
 
 // Route to delete a products from the shopping cart
 router.post("/delete-from-shopping-cart", deleteFromShoppingCart);
+
+//Update Product Quantity
+router.post("/update-Product-quantity", setProductQuantity);
 
 export default router;

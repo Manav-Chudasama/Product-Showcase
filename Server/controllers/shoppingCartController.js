@@ -185,3 +185,41 @@ export const deleteFromShoppingCart = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error." });
   }
 };
+
+// set quantity
+export const setProductQuantity = async (req, res) => {
+  try {
+    const { productId, productType, quantity } = req.body;
+
+    if ((!productId, !productType, !quantity)) {
+      res
+        .status(400)
+        .json({ success: false, message: "Please fill all the fields" });
+    }
+
+    // Determine which product array to use
+    const productModel =
+      productType === "fresh" ? freshProductsModel : thriftProductsModel;
+
+    // Find the product by ID and update its quantity
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found." });
+    }
+
+    // Update the quantity field of the product
+    product.quantity = quantity;
+    await product.save();
+
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: "Product quantity updated successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};

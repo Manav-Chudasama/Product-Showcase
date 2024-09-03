@@ -35,6 +35,10 @@ const thriftProductSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  quantity: {
+    type: Number,
+  },
   reviews: [reviewSchema], // Embed the review schema
 });
 

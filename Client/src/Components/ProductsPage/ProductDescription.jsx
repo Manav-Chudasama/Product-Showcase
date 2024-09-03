@@ -179,7 +179,7 @@ export default function ProductDescription() {
                 </h1>
                 <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                   <p className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
-                    ${product.price}
+                    ₹{product.price}
                   </p>
                   <div className="flex items-center gap-2 mt-2 sm:mt-0">
                     <div className="flex items-center gap-1">
