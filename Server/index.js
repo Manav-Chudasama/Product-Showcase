@@ -11,6 +11,8 @@ import thriftProductsRoutes from "./routes/thriftProductsRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import shoppingCartRoutes from "./routes/shoppingCartRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import productOrderRoutes from "./routes/productOrderRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -48,6 +50,8 @@ app.use("/api/thrift-products", thriftProductsRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/shopping-cart", shoppingCartRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/productOrder", productOrderRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello world!");

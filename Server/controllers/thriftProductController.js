@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import ThriftproductModel from "../models/thriftProductsModel.js";
-import thriftProductsModel from "../models/thriftProductsModel.js";
 
 // fetch all the thrift products
 export const getAllThriftProducts = async (req, res) => {

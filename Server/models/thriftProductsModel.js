@@ -3,12 +3,12 @@ import reviewSchema from "./reviewModel.js";
 
 const thriftProductSchema = mongoose.Schema({
   userId: {
-    type: "string",
+    type: String,
     required: true,
     trim: true,
   },
   username: {
-    type: "string",
+    type: String,
     required: true,
     trim: true,
   },

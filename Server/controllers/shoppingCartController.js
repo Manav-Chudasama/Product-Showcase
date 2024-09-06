@@ -198,11 +198,11 @@ export const setProductQuantity = async (req, res) => {
     }
 
     // Determine which product array to use
-    const productModel =
-      productType === "fresh" ? freshProductsModel : thriftProductsModel;
+    // const productModel =
+    //   productType === "fresh" ? freshProductsModel : thriftProductsModel;
 
     // Find the product by ID and update its quantity
-    const product = await productModel.findById(productId);
+    const product = await shoppingCartModel.findById(productId);
 
     if (!product) {
       return res

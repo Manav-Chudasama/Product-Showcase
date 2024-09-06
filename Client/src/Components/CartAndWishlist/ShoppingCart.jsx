@@ -10,12 +10,17 @@ import {
 } from "../../utils/api/shoppingCartApi";
 import { Fade } from "react-awesome-reveal";
 import AlertBox from "../../utils/parts/AlertBox";
+import {
+  createRazorpayOrder,
+  handleRazorpayScreen,
+  paymentfetch,
+} from "../../utils/api/paymentApi";
 
 const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
-  console.log(product.productId.quantity);
-
   const { user } = useUser();
-  const [quantity, setQuantity] = useState(product.productId.quantity);
+  const [quantity, setQuantity] = useState(product.quantity);
+  console.log(product._id);
+
   const [productTotalPrice, setProductTotalPrice] = useState(
     product.productId.price
   );
@@ -30,7 +35,7 @@ const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
 
     onUpdateQuantity(product.productId._id, newQuantity);
     const response = await setProductQuantity(
-      product.productId._id,
+      product._id,
       productType,
       newQuantity
     );
@@ -61,9 +66,7 @@ const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
   };
 
   useEffect(() => {
-    handleQuantityChange(
-      isNaN(product.productId.quantity) ? 1 : product.productId.quantity
-    );
+    handleQuantityChange(isNaN(product.quantity) ? 1 : product.quantity);
   }, []);
 
   return (
@@ -263,7 +266,14 @@ export default function ShoppingCart() {
             />
           )}
         </div>
-        <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
+        <CheckoutForm
+          products={shoppingCart}
+          subtotal={subtotal}
+          shippingCost={shippingCost}
+          taxRate={taxRate}
+          total={total}
+        />
+        {/* <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
           <h3 className="text-lg max-sm:text-base font-bold text-gray-800 border-b border-gray-300 pb-2">
             Order Summary
           </h3>
@@ -375,6 +385,7 @@ export default function ShoppingCart() {
             <button
               type="button"
               className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-gray-800 hover:bg-gray-900 text-white rounded-md"
+              onClick={() => handleRazorpayOrder(total)}
             >
               Checkout
             </button>
@@ -385,15 +396,262 @@ export default function ShoppingCart() {
               Continue Shopping
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </Fade>
   );
 }
+
+const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
+  const { user } = useUser();
+  // console.log(JSON.stringify(products));
+  products;
+  // axios.post(
+  //   "http://localhost:4000/api/productOrder/createProductOrder",
+  //   {
+  //     products,
+  //   },
+  //   {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }
+  // );
+
+  // const loadScript = async (src) => {
+  //   return new Promise((resolve) => {
+  //     const script = document.createElement("script");
+  //     script.src = src;
+
+  //     script.onload = () => {
+  //       resolve(true);
+  //     };
+
+  //     script.onerror = () => {
+  //       resolve(false);
+  //     };
+
+  //     document.body.appendChild(script);
+  //   });
+  // };
+
+  const handleRazorpayScreen = async (order) => {
+    try {
+      // let payment_id;
+      // const res = await loadScript(
+      //   "https://checkout.razorpay.com/v1/checkout.js"
+      // );
+
+      // if (!res) {
+      //   console.log("Error loading checkout.js");
+      //   alert("error loading checkout.js");
+      //   return;
+      // }
+
+      const options = {
+        key: import.meta.env.VITE_TEST_KEY,
+        amount: order.amount,
+        currency: "INR",
+        name: "Product Showcase", //your business name
+        description: "Paid to Product Showcase",
+        image: "https://example.com/your_logo",
+        order_id: order.id,
+        handler: async (response) => {
+          const result = await axios.post(
+            "http://localhost:4000/api/payment/paymentVerification",
+            {
+              payment_id: response.razorpay_payment_id,
+              order_id: response.razorpay_order_id,
+              signature: response.razorpay_signature,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const { payment_id, order_id, signature } = result.data;
+
+          const productOrder = axios.post(
+            "http://localhost:4000/api/productOrder/createProductOrder",
+            {
+              payment_id,
+              order_id,
+              signature,
+              userId: user.id,
+              username: user.fullName,
+              products,
+              totalAmount: total,
+            }
+          );
+          console.log(payment_id, order_id, signature);
+
+          // console.log(result);
+        },
+        // callback_url: "http://localhost:4000/api/payment/paymentVerification",
+        prefill: {
+          name: user.fullName, //customer's name
+          email: user.emailAddresses[0].emailAddress,
+          //contact: "9000090000", //Provide the customer's phone number for better conversion rates
+        },
+        theme: {
+          color: "red",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRazorpayOrder = async (totalAmount) => {
+    const response = await createRazorpayOrder(totalAmount);
+    console.log("order id: ", response.order.amount);
+    await handleRazorpayScreen(response.order);
+    // await paymentObject.open();
+
+    // const result = await paymentfetch(payment_id);
+    // console.log(result);
+  };
+  return (
+    <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
+      <h3 className="text-lg max-sm:text-base font-bold text-gray-800 border-b border-gray-300 pb-2">
+        Order Summary
+      </h3>
+      <form className="mt-6">
+        <div>
+          <h3 className="text-base text-gray-800  font-semibold mb-4">
+            Enter Details
+          </h3>
+          <div className="space-y-3">
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="#bbb"
+                stroke="#bbb"
+                className="w-4 h-4 absolute right-4"
+                viewBox="0 0 24 24"
+              >
+                <circle cx={10} cy={7} r={6} data-original="#000000" />
+                <path
+                  d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                  data-original="#000000"
+                />
+              </svg>
+            </div>
+            <div className="relative flex items-center">
+              <input
+                type="email"
+                placeholder="Email"
+                className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="#bbb"
+                stroke="#bbb"
+                className="w-4 h-4 absolute right-4"
+                viewBox="0 0 682.667 682.667"
+              >
+                <defs>
+                  <clipPath id="a" clipPathUnits="userSpaceOnUse">
+                    <path d="M0 512h512V0H0Z" data-original="#000000" />
+                  </clipPath>
+                </defs>
+                <g
+                  clipPath="url(#a)"
+                  transform="matrix(1.33 0 0 -1.33 0 682.667)"
+                >
+                  <path
+                    fill="none"
+                    strokeMiterlimit={10}
+                    strokeWidth={40}
+                    d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z"
+                    data-original="#000000"
+                  />
+                  <path
+                    d="M472 274.9V107.999c0-11.027-8.972-20-20-20H60c-11.028 0-20 8.973-20 20V274.9L0 304.652V107.999c0-33.084 26.916-60 60-60h392c33.084 0 60 26.916 60 60v196.653Z"
+                    data-original="#000000"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div className="relative flex items-center">
+              <input
+                type="number"
+                placeholder="Phone No."
+                className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"
+              />
+              <svg
+                fill="#bbb"
+                className="w-4 h-4 absolute right-4"
+                viewBox="0 0 64 64"
+              >
+                <path
+                  d="m52.148 42.678-6.479-4.527a5 5 0 0 0-6.963 1.238l-1.504 2.156c-2.52-1.69-5.333-4.05-8.014-6.732-2.68-2.68-5.04-5.493-6.73-8.013l2.154-1.504a4.96 4.96 0 0 0 2.064-3.225 4.98 4.98 0 0 0-.826-3.739l-4.525-6.478C20.378 10.5 18.85 9.69 17.24 9.69a4.69 4.69 0 0 0-1.628.291 8.97 8.97 0 0 0-1.685.828l-.895.63a6.782 6.782 0 0 0-.63.563c-1.092 1.09-1.866 2.472-2.303 4.104-1.865 6.99 2.754 17.561 11.495 26.301 7.34 7.34 16.157 11.9 23.011 11.9 1.175 0 2.281-.136 3.29-.406 1.633-.436 3.014-1.21 4.105-2.302.199-.199.388-.407.591-.67l.63-.899a9.007 9.007 0 0 0 .798-1.64c.763-2.06-.007-4.41-1.871-5.713z"
+                  data-original="#000000"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </form>
+      <ul className="text-gray-800 mt-6 space-y-3">
+        <li className="flex flex-wrap gap-4 text-sm">
+          Subtotal{" "}
+          <span className="ml-auto font-bold">₹{subtotal.toFixed(2)}</span>
+        </li>
+        <li className="flex flex-wrap gap-4 text-sm">
+          Shipping{" "}
+          <span className="ml-auto font-bold">₹{shippingCost.toFixed(2)}</span>
+        </li>
+        <li className="flex flex-wrap gap-4 text-sm">
+          Tax{" "}
+          <span className="ml-auto font-bold">
+            ₹{(subtotal * taxRate).toFixed(2)}
+          </span>
+        </li>
+        <hr className="border-gray-300" />
+        <li className="flex flex-wrap gap-4 text-sm font-bold">
+          Total <span className="ml-auto">₹{total.toFixed(2)}</span>
+        </li>
+      </ul>
+      <div className="mt-6 space-y-3">
+        <button
+          type="button"
+          className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-gray-800 hover:bg-gray-900 text-white rounded-md"
+          onClick={() => handleRazorpayOrder(total)}
+        >
+          Checkout
+        </button>
+        <button
+          type="button"
+          className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-700 text-white border border-gray-300 rounded-md"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  );
+};
 
 ShoppingCard.propTypes = {
   product: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired,
   onAlert: PropTypes.func.isRequired,
   onUpdateQuantity: PropTypes.func.isRequired,
+};
+
+CheckoutForm.propTypes = {
+  products: PropTypes.object.isRequired,
+  subtotal: PropTypes.number.isRequired,
+  shippingCost: PropTypes.number.isRequired,
+  taxRate: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
 };
