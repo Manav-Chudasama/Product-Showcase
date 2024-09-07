@@ -189,30 +189,57 @@ export const deleteFromShoppingCart = async (req, res) => {
 // set quantity
 export const setProductQuantity = async (req, res) => {
   try {
-    const { productId, productType, quantity } = req.body;
+    const { userId, productId, productType, quantity } = req.body;
 
-    if ((!productId, !productType, !quantity)) {
-      res
+    if ((!userId, !productId, !productType, !quantity)) {
+      return res
         .status(400)
         .json({ success: false, message: "Please fill all the fields" });
     }
 
-    // Determine which product array to use
-    // const productModel =
-    //   productType === "fresh" ? freshProductsModel : thriftProductsModel;
+    const validUserId = await userModel.findOne({ userId: userId }, { _id: 1 });
+    // console.log(userId);
 
     // Find the product by ID and update its quantity
-    const product = await shoppingCartModel.findById(productId);
+    const shoppingCart = await shoppingCartModel.findOne({
+      userId: validUserId,
+    });
 
-    if (!product) {
+    if (!shoppingCart) {
       return res
         .status(404)
         .json({ success: false, message: "Product not found." });
     }
+    let productUpdated = false;
 
-    // Update the quantity field of the product
-    product.quantity = quantity;
-    await product.save();
+    if (productType == "fresh") {
+      const product = shoppingCart.freshProducts.find(
+        (item) => item.productId.toString() === productId
+      );
+
+      if (product) {
+        product.quantity = quantity;
+        productUpdated = true;
+      }
+    } else if (productType == "thrift") {
+      const product = shoppingCart.thriftProducts.find(
+        (item) => item.productId.toString() === productId
+      );
+
+      if (product) {
+        product.quantity = quantity;
+        productUpdated = true;
+      }
+    }
+
+    if (!productUpdated) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found in the specified category.",
+      });
+    }
+
+    await shoppingCart.save();
 
     // Send success response
     res.status(200).json({

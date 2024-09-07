@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
@@ -35,7 +36,8 @@ const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
 
     onUpdateQuantity(product.productId._id, newQuantity);
     const response = await setProductQuantity(
-      product._id,
+      user.id,
+      product.productId._id,
       productType,
       newQuantity
     );
@@ -58,6 +60,7 @@ const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
       console.log(response.data);
       if (response.data.success) {
         onRemove(product.productId._id, productType);
+        onUpdateQuantity(product.quantity);
         onAlert("Product removed from shopping Cart!", "error");
       }
     } catch (error) {
@@ -405,7 +408,6 @@ export default function ShoppingCart() {
 const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
   const { user } = useUser();
   // console.log(JSON.stringify(products));
-  products;
   // axios.post(
   //   "http://localhost:4000/api/productOrder/createProductOrder",
   //   {
@@ -472,7 +474,7 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
           );
           const { payment_id, order_id, signature } = result.data;
 
-          const productOrder = axios.post(
+          const productOrder = await axios.post(
             "http://localhost:4000/api/productOrder/createProductOrder",
             {
               payment_id,
@@ -630,12 +632,14 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
         >
           Checkout
         </button>
+        {/* <Link to="/fresh-products"> */}
         <button
           type="button"
           className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-700 text-white border border-gray-300 rounded-md"
         >
           Continue Shopping
         </button>
+        {/* </Link> */}
       </div>
     </div>
   );

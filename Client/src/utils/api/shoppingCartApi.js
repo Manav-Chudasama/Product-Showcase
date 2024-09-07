@@ -47,11 +47,17 @@ export const deleteFromShoppingCart = async (
   }
 };
 
-export const setProductQuantity = async (productId, productType, quantity) => {
+export const setProductQuantity = async (
+  userId,
+  productId,
+  productType,
+  quantity
+) => {
   try {
     const response = await axios.post(
       "http://localhost:4000/api/shopping-cart/update-Product-quantity",
       {
+        userId,
         productId,
         productType: productType == "Fresh Product" ? "fresh" : "thrift",
         quantity,
