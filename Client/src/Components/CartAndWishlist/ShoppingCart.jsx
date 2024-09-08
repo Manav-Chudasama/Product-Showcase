@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
@@ -407,52 +407,13 @@ export default function ShoppingCart() {
 
 const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
-  // console.log(JSON.stringify(products));
-  // axios.post(
-  //   "http://localhost:4000/api/productOrder/createProductOrder",
-  //   {
-  //     products,
-  //   },
-  //   {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   }
-  // );
-
-  // const loadScript = async (src) => {
-  //   return new Promise((resolve) => {
-  //     const script = document.createElement("script");
-  //     script.src = src;
-
-  //     script.onload = () => {
-  //       resolve(true);
-  //     };
-
-  //     script.onerror = () => {
-  //       resolve(false);
-  //     };
-
-  //     document.body.appendChild(script);
-  //   });
-  // };
 
   const handleRazorpayScreen = async (order) => {
     try {
-      // let payment_id;
-      // const res = await loadScript(
-      //   "https://checkout.razorpay.com/v1/checkout.js"
-      // );
-
-      // if (!res) {
-      //   console.log("Error loading checkout.js");
-      //   alert("error loading checkout.js");
-      //   return;
-      // }
-
       const options = {
         key: import.meta.env.VITE_TEST_KEY,
         amount: order.amount,
@@ -488,12 +449,16 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
               email: email || user.emailAddresses[0].emailAddress,
               phone,
               products,
+              subTotal: subtotal,
+              shippingCost,
+              taxRate,
               totalAmount: total,
             }
           );
-          console.log(payment_id, order_id, signature);
 
-          // console.log(result);
+          if (productOrder.data.success) {
+            navigate("/order-overview");
+          }
         },
         // callback_url: "http://localhost:4000/api/payment/paymentVerification",
         prefill: {
@@ -532,7 +497,7 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
       setFullName(user.fullName);
       setEmail(user.emailAddresses[0].emailAddress);
     }
-  }, []);
+  }, [user]);
   return (
     <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
       <h3 className="text-lg max-sm:text-base font-bold text-gray-800 border-b border-gray-300 pb-2">

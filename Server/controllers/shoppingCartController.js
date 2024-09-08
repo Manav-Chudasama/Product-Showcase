@@ -187,7 +187,7 @@ export const deleteFromShoppingCart = async (req, res) => {
 };
 
 // set quantity
-export const setProductQuantityAndPrice = async (req, res) => {
+export const setProductQuantity = async (req, res) => {
   try {
     const { userId, productId, productType, quantity } = req.body;
 
@@ -247,6 +247,8 @@ export const setProductQuantityAndPrice = async (req, res) => {
       message: "Product quantity updated successfully.",
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

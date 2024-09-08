@@ -49,6 +49,18 @@ const productOrderSchema = new mongoose.Schema({
       price: { type: Number, required: true },
     },
   ],
+  subTotal: {
+    type: Number,
+    required: true,
+  },
+  shippingCost: {
+    type: Number,
+    required: true,
+  },
+  taxRate: {
+    type: Number,
+    required: true,
+  },
   totalAmount: {
     type: Number,
     required: true,

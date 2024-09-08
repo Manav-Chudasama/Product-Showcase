@@ -12,6 +12,9 @@ export const createProductOrder = async (req, res) => {
       email,
       phone,
       products, // containing freshProducts and thriftProducts arrays
+      subTotal,
+      shippingCost,
+      taxRate,
       totalAmount,
     } = req.body;
 
@@ -24,6 +27,9 @@ export const createProductOrder = async (req, res) => {
       !email,
       !phone,
       !products,
+      !subTotal,
+      !shippingCost,
+      !taxRate,
       !totalAmount)
     ) {
       return res
@@ -33,17 +39,17 @@ export const createProductOrder = async (req, res) => {
 
     // Combinig the freshProducts and thriftProducts into a single array for storage
     const allProducts = [
-      ...products[0].freshProducts.map((product) => ({
+      ...products.freshProducts.map((product) => ({
         productId: product.productId._id,
         productType: "fresh",
         quantity: product.quantity,
-        price: product.productId.price,
+        price: Number(product.productId.price) * Number(product.quantity),
       })),
-      ...products[0].thriftProducts.map((product) => ({
+      ...products.thriftProducts.map((product) => ({
         productId: product.productId._id,
         productType: "thrift",
         quantity: product.quantity,
-        price: product.productId.price,
+        price: Number(product.productId.price) * Number(product.quantity),
       })),
     ];
 
@@ -57,6 +63,9 @@ export const createProductOrder = async (req, res) => {
       email,
       phone,
       products: allProducts,
+      subTotal,
+      shippingCost,
+      taxRate,
       totalAmount,
     });
 
@@ -72,6 +81,23 @@ export const createProductOrder = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+export const getAllProductOrders = async (req, res) => {
+  try {
+    const orders = await ProductOrderModel.find();
+
+    res.status(200).json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching Product Orders",
+      error: error.message,
     });
   }
 };

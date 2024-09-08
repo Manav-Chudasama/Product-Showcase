@@ -1,26 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { format } from "date-fns";
+import PropTypes from "prop-types";
 import { IoMdCheckmark } from "react-icons/io";
+import { Link } from "react-router-dom";
+import { getAllProductOrders } from "../../utils/api/paymentApi";
 
-const OrderOverviewCard = () => {
+const OrderOverviewCard = ({ order }) => {
   return (
     <div className="flex flex-wrap items-center gap-y-4 py-6">
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-500">Order ID:</dt>
-        <dd className="mt-1.5 text-base font-semibold text-gray-900">
+        <dd className="mt-1.5 text-sm font-semibold text-gray-900">
           <a href="#" className="hover:underline">
-            #FWB139485607
+            {order.orderId}
           </a>
         </dd>
       </dl>
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-500">Date:</dt>
         <dd className="mt-1.5 text-base font-semibold text-gray-900">
-          08.12.2023
+          {format(new Date(order.timestamp).toLocaleDateString(), "dd-MM-yyyy")}
         </dd>
       </dl>
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-500">Price:</dt>
-        <dd className="mt-1.5 text-base font-semibold text-gray-900">$85</dd>
+        <dd className="mt-1.5 text-base font-semibold text-gray-900">
+          {order.totalAmount}
+        </dd>
       </dl>
       <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
         <dt className="text-base font-medium text-gray-500">Status:</dt>
@@ -30,18 +36,26 @@ const OrderOverviewCard = () => {
         </dd>
       </dl>
       <div className="w-full flex lg:w-64 items-center justify-center gap-4">
-        <a
-          href="#"
-          className="w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 lg:w-auto"
-        >
+        <button className="w-full inline-flex justify-center rounded-lg  border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-600 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 lg:w-auto">
           View details
-        </a>
+        </button>
       </div>
     </div>
   );
 };
 
 export default function OrderOverview() {
+  const [orders, setOrders] = useState([]);
+
+  const getOrders = async () => {
+    const response = await getAllProductOrders();
+    console.log(response.orders);
+    setOrders(response.orders);
+  };
+
+  useEffect(() => {
+    getOrders();
+  }, []);
   return (
     <div>
       <section className="bg-white py-8 antialiased md:py-16">
@@ -54,7 +68,13 @@ export default function OrderOverview() {
             </div>
             <div className="mt-6 flow-root sm:mt-8">
               <div className="divide-y divide-gray-200">
-                <OrderOverviewCard />
+                {orders
+                  .map((order, index) => (
+                    <div key={index}>
+                      <OrderOverviewCard order={order} />
+                    </div>
+                  ))
+                  .reverse()}
               </div>
             </div>
           </div>
@@ -63,3 +83,7 @@ export default function OrderOverview() {
     </div>
   );
 }
+
+OrderOverviewCard.propTypes = {
+  order: PropTypes.arrayOf(PropTypes.object).isRequired,
+};

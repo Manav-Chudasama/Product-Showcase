@@ -89,3 +89,15 @@ export const paymentfetch = async (paymentId) => {
     console.log(error);
   }
 };
+
+export const getAllProductOrders = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:4000/api/productOrder/getAllProductOrders"
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

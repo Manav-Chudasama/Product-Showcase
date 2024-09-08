@@ -32,7 +32,6 @@ const shoppingCartSchema = new mongoose.Schema({
         default: Date.now,
       },
       quantity: { type: Number, default: 1 },
-      price: { type: Number, required: true },
     },
   ],
 });
