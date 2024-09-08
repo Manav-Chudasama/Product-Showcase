@@ -5,6 +5,7 @@ import { BsFillBagHeartFill } from "react-icons/bs";
 import { RiAccountCircleFill, RiGalleryUploadFill } from "react-icons/ri";
 import { BiLogOut } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { IoIosArrowDown } from "react-icons/io";
 import Logo from "../../assets/Logo.png";
 import Logo1 from "../../assets/Logo1.png";
 import Sidebar from "./Sidebar";
@@ -16,7 +17,7 @@ import {
   useUser,
 } from "@clerk/clerk-react";
 import { Fade, Slide } from "react-awesome-reveal";
-import { IoIosArrowDown } from "react-icons/io";
+import { TiThList } from "react-icons/ti";
 export default function Header() {
   const { user } = useUser();
   // console.log(user.firstname);
@@ -174,7 +175,21 @@ export default function Header() {
                           })}
                         >
                           <FaShoppingCart />
-                          Your Cart
+                          Shopping Cart
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/order-overview"
+                          className="flex gap-2 items-center px-4 py-2 hover:bg-gray-100"
+                          style={({ isActive }) => ({
+                            backgroundColor: isActive
+                              ? "rgb(243 244 246 / var(--tw-bg-opacity))"
+                              : "",
+                          })}
+                        >
+                          <TiThList />
+                          Order Overview
                         </NavLink>
                       </li>
                       <li>

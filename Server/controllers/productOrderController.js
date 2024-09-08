@@ -9,21 +9,37 @@ export const createProductOrder = async (req, res) => {
       signature,
       userId,
       username,
+      email,
+      phone,
       products, // containing freshProducts and thriftProducts arrays
       totalAmount,
     } = req.body;
 
-    // console.log(req.body.products.freshProducts);
+    if (
+      (!payment_id,
+      !order_id,
+      !signature,
+      !userId,
+      !username,
+      !email,
+      !phone,
+      !products,
+      !totalAmount)
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please fill all the fields" });
+    }
 
     // Combinig the freshProducts and thriftProducts into a single array for storage
     const allProducts = [
-      ...products.freshProducts.map((product) => ({
+      ...products[0].freshProducts.map((product) => ({
         productId: product.productId._id,
         productType: "fresh",
         quantity: product.quantity,
         price: product.productId.price,
       })),
-      ...products.thriftProducts.map((product) => ({
+      ...products[0].thriftProducts.map((product) => ({
         productId: product.productId._id,
         productType: "thrift",
         quantity: product.quantity,
@@ -38,6 +54,8 @@ export const createProductOrder = async (req, res) => {
       signature,
       userId,
       username,
+      email,
+      phone,
       products: allProducts,
       totalAmount,
     });

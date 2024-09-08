@@ -407,6 +407,9 @@ export default function ShoppingCart() {
 
 const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
   const { user } = useUser();
+  const [fullName, setFullName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
   // console.log(JSON.stringify(products));
   // axios.post(
   //   "http://localhost:4000/api/productOrder/createProductOrder",
@@ -481,7 +484,9 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
               order_id,
               signature,
               userId: user.id,
-              username: user.fullName,
+              username: fullName || user.fullName,
+              email: email || user.emailAddresses[0].emailAddress,
+              phone,
               products,
               totalAmount: total,
             }
@@ -509,14 +514,25 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
   };
 
   const handleRazorpayOrder = async (totalAmount) => {
+    if (!fullName || !email || !phone) {
+      return alert("Please fill your information");
+    }
     const response = await createRazorpayOrder(totalAmount);
-    console.log("order id: ", response.order.amount);
     await handleRazorpayScreen(response.order);
     // await paymentObject.open();
 
     // const result = await paymentfetch(payment_id);
     // console.log(result);
   };
+
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+
+      setFullName(user.fullName);
+      setEmail(user.emailAddresses[0].emailAddress);
+    }
+  }, []);
   return (
     <div className="bg-gray-100 p-4 h-max rounded-xl shadow-[0_4px_8px_0_rgba(0,0,0,0.2)] transition-all hover:shadow-[0_8px_14px_0_rgba(0,0,0,0.2)]">
       <h3 className="text-lg max-sm:text-base font-bold text-gray-800 border-b border-gray-300 pb-2">
@@ -531,6 +547,8 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
             <div className="relative flex items-center">
               <input
                 type="text"
+                value={fullName}
+                required
                 placeholder="Full Name"
                 className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"
               />
@@ -551,6 +569,11 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
             <div className="relative flex items-center">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                required
                 placeholder="Email"
                 className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"
               />
@@ -586,9 +609,21 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
             </div>
             <div className="relative flex items-center">
               <input
-                type="number"
+                type="tel"
+                value={phone}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value) && value.length <= 10) {
+                    setPhone(value);
+                  }
+                }}
                 placeholder="Phone No."
                 className="px-4 py-2.5 bg-white text-gray-800 rounded-md w-full text-sm border-b focus:border-gray-800 outline-none"
+                pattern="[0-9]{10}"
+                maxLength={10}
+                minLength={10}
+                required
+                title="Phone number should be exactly 10 digits"
               />
               <svg
                 fill="#bbb"

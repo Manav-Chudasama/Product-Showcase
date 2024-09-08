@@ -26,6 +26,8 @@ import {
   getAllFreshProducts,
   getAllthriftProducts,
 } from "./utils/api/productsApi";
+import OrderOverview from "./Components/CartAndWishlist/OrderOverview";
+import OrderSummary from "./Components/CartAndWishlist/OrderSummary";
 
 function Layout() {
   const location = useLocation();
@@ -69,6 +71,8 @@ const router = createBrowserRouter(
       <Route path="sign-in" element={<Auth />} />
       <Route path="account-profile" element={<AccountProfile />} />
       <Route path="user-thrift-products" element={<UserThriftProducts />} />
+      <Route path="order-overview" element={<OrderOverview />} />
+      <Route path="order-summary" element={<OrderSummary />} />
     </Route>
   )
 );

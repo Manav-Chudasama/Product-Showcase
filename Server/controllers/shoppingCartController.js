@@ -187,7 +187,7 @@ export const deleteFromShoppingCart = async (req, res) => {
 };
 
 // set quantity
-export const setProductQuantity = async (req, res) => {
+export const setProductQuantityAndPrice = async (req, res) => {
   try {
     const { userId, productId, productType, quantity } = req.body;
 

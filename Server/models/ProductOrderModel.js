@@ -27,6 +27,16 @@ const productOrderSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  phone: {
+    type: Number,
+    required: true,
+  },
   products: [
     {
       productId: {
