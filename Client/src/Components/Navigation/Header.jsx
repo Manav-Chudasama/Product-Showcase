@@ -51,8 +51,8 @@ export default function Header() {
     <>
       <ClerkLoaded>
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div className="w-full flex flex-col p-4 justify-between">
-          <div className="w-full pb-4 flex justify-between items-center border-b border-black">
+        <div className="w-full flex flex-col p-4 justify-between sticky top-0 z-50 border-b border-black bg-slate-50 bg-opacity-40 backdrop-filter backdrop-blur-sm">
+          <div className="w-full pb-4 flex justify-between items-center">
             <button onClick={toggleSidebar}>
               <GiHamburgerMenu size={30} className="md:hidden" />
             </button>
@@ -113,7 +113,7 @@ export default function Header() {
               ref={dropdownRef}
             >
               <div
-                className="flex items-center px-2 pr-6 space-x-2 cursor-pointer rounded-lg hover:bg-gray-100"
+                className="flex items-center px-2 pr-6 space-x-2 cursor-pointer rounded-lg hover:bg-white hover:bg-opacity-90"
                 onClick={toggleDropdown}
               >
                 <img
@@ -284,7 +284,7 @@ export default function Header() {
           </div>
         </div> */}
           {/* <div className="md:hidden pt-2"><Search /></div> */}
-          <hr className="hidden md:block" />
+          {/* <hr className="hidden md:block" /> */}
         </div>
       </ClerkLoaded>
     </>

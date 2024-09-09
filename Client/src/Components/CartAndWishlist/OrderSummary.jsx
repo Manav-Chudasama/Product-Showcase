@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
+import { Fade } from "react-awesome-reveal";
 
 const OrderSummaryCard = ({ product }) => {
   return (
@@ -39,7 +40,7 @@ export default function OrderSummary() {
   console.log(order);
 
   return (
-    <div>
+    <Fade delay={200}>
       <section className="bg-white py-8 antialiased md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
           <div className="mx-auto max-w-3xl">
@@ -113,7 +114,7 @@ export default function OrderSummary() {
           </div>
         </div>
       </section>
-    </div>
+    </Fade>
   );
 }
 

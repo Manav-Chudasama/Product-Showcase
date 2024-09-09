@@ -5,6 +5,7 @@ import { IoMdCheckmark } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllProductOrders } from "../../utils/api/paymentApi";
 import { useUser } from "@clerk/clerk-react";
+import { Fade } from "react-awesome-reveal";
 
 const OrderOverviewCard = ({ order }) => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export default function OrderOverview() {
     }
   }, [user]);
   return (
-    <div>
+    <Fade delay={200}>
       <section className="bg-white py-8 antialiased md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
           <div className="mx-auto max-w-5xl">
@@ -94,7 +95,7 @@ export default function OrderOverview() {
           </div>
         </div>
       </section>
-    </div>
+    </Fade>
   );
 }
 

@@ -94,10 +94,27 @@ export const createProductOrder = async (req, res) => {
   }
 };
 
-export const getAllProductOrders = async (req, res) => {
+export const getUserProductOrders = async (req, res) => {
   try {
     const { userId } = req.params;
     const orders = await ProductOrderModel.find({ userId: userId });
+
+    res.status(200).json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching Product Orders",
+      error: error.message,
+    });
+  }
+};
+
+export const getAllProductOrders = async (req, res) => {
+  try {
+    const orders = await ProductOrderModel.find();
 
     res.status(200).json({
       success: true,

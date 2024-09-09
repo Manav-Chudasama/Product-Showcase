@@ -6,6 +6,7 @@ export default function Statistics() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalFreshProducts, setTotalFreshproducts] = useState(0);
   const [totalUploadedProducts, setTotalUploadedProducts] = useState(0);
+  const [totalPurchasedProducts, setTotalPurchasedProducts] = useState(0);
 
   const fetchusers = async () => {
     try {
@@ -37,6 +38,17 @@ export default function Statistics() {
         "http://localhost:4000/api/thrift-products/"
       );
       setTotalUploadedProducts(response.data.thriftProducts.length);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const fetchProductOrders = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:4000/api/productOrder"
+      );
+      setTotalPurchasedProducts(response.data.orders.length);
     } catch (error) {
       console.log(error.message);
     }
