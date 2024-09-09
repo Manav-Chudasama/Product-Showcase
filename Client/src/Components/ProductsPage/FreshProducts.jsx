@@ -83,7 +83,7 @@ export default function FreshProducts() {
           </div>
         </div>
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4 min-h-96">
             {filteredProducts.map((product, index) => (
               <ProductCard
                 key={index}

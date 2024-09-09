@@ -90,10 +90,10 @@ export const paymentfetch = async (paymentId) => {
   }
 };
 
-export const getAllProductOrders = async () => {
+export const getAllProductOrders = async (userId) => {
   try {
     const response = await axios.get(
-      "http://localhost:4000/api/productOrder/getAllProductOrders"
+      `http://localhost:4000/api/productOrder/getAllProductOrders/${userId}`
     );
 
     return response.data;

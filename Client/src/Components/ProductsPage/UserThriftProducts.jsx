@@ -36,7 +36,7 @@ export default function UserThriftProducts() {
           <div className="w-[90%] flex items-center relative left-[1%] lg:left-[7%] gap-5"></div>
         </div>
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4 min-h-96">
             {products &&
               products.map((product, index) => (
                 <ProductCard

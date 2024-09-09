@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <div>
       <ClerkLoaded>
-        <Fade delay={300}>
+        <Fade delay={300} triggerOnce>
           <footer className="bg-white rounded-xl shadow-[16px_16px_16px_16px_rgba(0,0,0,0.2)] -z-50">
             <div className="container px-6 py-12 mx-auto">
               <div className="grid gap-6 grid-cols-2 sm:gap-y-10 lg:grid-cols-4">

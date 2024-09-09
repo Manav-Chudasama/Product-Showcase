@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import ProductOrderModel from "../models/ProductOrderModel.js";
+import { deleteAfterProductOrder } from "./shoppingCartController.js";
 
 export const createProductOrder = async (req, res) => {
   try {
@@ -41,12 +42,14 @@ export const createProductOrder = async (req, res) => {
     const allProducts = [
       ...products.freshProducts.map((product) => ({
         productId: product.productId._id,
+        productTitle: product.productId.title,
         productType: "fresh",
         quantity: product.quantity,
         price: Number(product.productId.price) * Number(product.quantity),
       })),
       ...products.thriftProducts.map((product) => ({
         productId: product.productId._id,
+        productTitle: product.productId.title,
         productType: "thrift",
         quantity: product.quantity,
         price: Number(product.productId.price) * Number(product.quantity),
@@ -70,6 +73,12 @@ export const createProductOrder = async (req, res) => {
     });
 
     const savedOrder = await newOrder.save();
+    if (!(await deleteAfterProductOrder(userId))) {
+      res.status(400).json({
+        success: false,
+        message: "Error Emptying Shopping Cart",
+      });
+    }
 
     res.status(201).json({
       success: true,
@@ -87,7 +96,8 @@ export const createProductOrder = async (req, res) => {
 
 export const getAllProductOrders = async (req, res) => {
   try {
-    const orders = await ProductOrderModel.find();
+    const { userId } = req.params;
+    const orders = await ProductOrderModel.find({ userId: userId });
 
     res.status(200).json({
       success: true,

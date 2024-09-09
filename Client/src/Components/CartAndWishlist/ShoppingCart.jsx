@@ -418,7 +418,7 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
         key: import.meta.env.VITE_TEST_KEY,
         amount: order.amount,
         currency: "INR",
-        name: "Product Showcase", //your business name
+        name: "Product Showcase",
         description: "Paid to Product Showcase",
         image: "https://example.com/your_logo",
         order_id: order.id,
@@ -451,7 +451,7 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
               products,
               subTotal: subtotal,
               shippingCost,
-              taxRate,
+              taxRate: (subtotal * taxRate).toFixed(2),
               totalAmount: total,
             }
           );

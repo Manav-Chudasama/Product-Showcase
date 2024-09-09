@@ -44,6 +44,7 @@ const productOrderSchema = new mongoose.Schema({
         required: true,
         trim: true,
       },
+      productTitle: { type: String, required: true },
       productType: { type: String, required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },

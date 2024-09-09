@@ -186,7 +186,6 @@ export const deleteFromShoppingCart = async (req, res) => {
   }
 };
 
-// set quantity
 export const setProductQuantity = async (req, res) => {
   try {
     const { userId, productId, productType, quantity } = req.body;
@@ -250,5 +249,33 @@ export const setProductQuantity = async (req, res) => {
     console.log(error);
 
     res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const deleteAfterProductOrder = async (userId) => {
+  try {
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required.",
+      });
+    }
+
+    const validUserId = await userModel.findOne({ userId: userId }, { _id: 1 });
+
+    // Finding the shopping cart by userId and setting the product arrays to empty
+    const updatedCart = await shoppingCartModel.findOneAndUpdate(
+      { userId: validUserId },
+      { freshProducts: [], thriftProducts: [] },
+      { new: true }
+    );
+
+    if (updatedCart) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
   }
 };

@@ -10,6 +10,6 @@ const router = express.Router();
 router.post("/createProductOrder", createProductOrder);
 
 // get all product orders
-router.get("/getAllProductOrders", getAllProductOrders);
+router.get("/getAllProductOrders/:userId", getAllProductOrders);
 
 export default router;

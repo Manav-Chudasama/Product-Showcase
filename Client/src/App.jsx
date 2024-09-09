@@ -72,7 +72,7 @@ const router = createBrowserRouter(
       <Route path="account-profile" element={<AccountProfile />} />
       <Route path="user-thrift-products" element={<UserThriftProducts />} />
       <Route path="order-overview" element={<OrderOverview />} />
-      <Route path="order-summary" element={<OrderSummary />} />
+      <Route path="order-summary/:orderId" element={<OrderSummary />} />
     </Route>
   )
 );
