@@ -16,11 +16,7 @@ import productOrderRoutes from "./routes/productOrderRoutes.js";
 
 const app = express();
 dotenv.config();
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors());
 app.use("/uploads/freshProducts", express.static("uploads/freshProducts"));
 app.use("/uploads/thriftProducts", express.static("uploads/thriftProducts"));
 connectdb();
