@@ -158,7 +158,9 @@ export default function ProductCard({
           <>
             <img
               className="mx-auto h-full dark:hidden"
-              src={`http://localhost:4000/${product.images[0]}`}
+              src={`${import.meta.env.VITE_BACKEND_API_URL}/${
+                product.images[0]
+              }`}
               alt={product.title}
             />
           </>

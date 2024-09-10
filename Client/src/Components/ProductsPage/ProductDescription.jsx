@@ -143,7 +143,9 @@ export default function ProductDescription() {
                     {product.images.map((image, index) => (
                       <SwiperSlide key={index}>
                         <img
-                          src={`http://localhost:4000/${image}`}
+                          src={`${
+                            import.meta.env.VITE_BACKEND_API_URL
+                          }/${image}`}
                           alt={product.title}
                           className="mx-auto h-96"
                         />
@@ -164,7 +166,9 @@ export default function ProductDescription() {
                     {product.images.map((image, index) => (
                       <SwiperSlide key={index}>
                         <img
-                          src={`http://localhost:4000/${image}`}
+                          src={`${
+                            import.meta.env.VITE_BACKEND_API_URL
+                          }/${image}`}
                           alt={product.title}
                           className="cursor-pointer border-2 border-gray-50 transition-all duration-500 hover:border-indigo-600"
                         />

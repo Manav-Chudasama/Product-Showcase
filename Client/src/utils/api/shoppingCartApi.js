@@ -3,7 +3,9 @@ import axios from "axios";
 export const addToShoppingCart = async (userId, productId, productType) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/shopping-cart/add-to-shopping-cart",
+      `${
+        import.meta.env.VITE_BACKEND_API_URL
+      }/api/shopping-cart/add-to-shopping-cart`,
       {
         userId,
         productId,
@@ -28,7 +30,9 @@ export const deleteFromShoppingCart = async (
 ) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/shopping-cart/delete-from-shopping-cart",
+      `${
+        import.meta.env.VITE_BACKEND_API_URL
+      }/api/shopping-cart/delete-from-shopping-cart`,
       {
         userId,
         productId,
@@ -55,7 +59,9 @@ export const setProductQuantity = async (
 ) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/shopping-cart/update-Product-quantity",
+      `${
+        import.meta.env.VITE_BACKEND_API_URL
+      }/api/shopping-cart/update-Product-quantity`,
       {
         userId,
         productId,

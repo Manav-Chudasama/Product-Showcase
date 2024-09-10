@@ -81,7 +81,7 @@ export default function AddProduct() {
       console.log(product._id);
       const images = [];
       product.images.map((image) =>
-        images.push("http://localhost:4000/" + image)
+        images.push(`${import.meta.env.VITE_BACKEND_API_URL}/` + image)
       );
       setFile(images);
     }
@@ -124,8 +124,12 @@ export default function AddProduct() {
       }
 
       const url = isUpdate
-        ? "http://localhost:4000/api/thrift-products/update-thriftProduct"
-        : "http://localhost:4000/api/thrift-products/create-thriftProduct";
+        ? `${
+            import.meta.env.VITE_BACKEND_API_URL
+          }/api/thrift-products/update-thriftProduct`
+        : `${
+            import.meta.env.VITE_BACKEND_API_URL
+          }/api/thrift-products/create-thriftProduct`;
 
       const response = await axios.post(url, formData, {
         headers: {

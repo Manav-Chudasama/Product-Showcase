@@ -13,7 +13,7 @@ export default function UserThriftProducts() {
       const userId = user.id;
       // console.log(user.id);
       const response = await axios.get(
-        `http://localhost:4000/api/thrift-products/${userId}`
+        `${import.meta.env.VITE_BACKEND_API_URL}/api/thrift-products/${userId}`
       );
       console.log(response.data);
       setProducts(response.data.thriftProducts);

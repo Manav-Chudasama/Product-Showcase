@@ -20,7 +20,7 @@ export const loadScript = async (src) => {
 export const createRazorpayOrder = async (amount) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/payment/orderId",
+      `${import.meta.env.VITE_BACKEND_API_URL}/api/payment/orderId`,
       {
         amount: amount * 100,
         currency: "INR",
@@ -81,7 +81,7 @@ export const handleRazorpayScreen = async (amount) => {
 export const paymentfetch = async (paymentId) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/payment/${paymentId}`
+      `${import.meta.env.VITE_BACKEND_API_URL}/api/payment/${paymentId}`
     );
 
     return response;
@@ -93,7 +93,9 @@ export const paymentfetch = async (paymentId) => {
 export const getAllProductOrders = async (userId) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/productOrder/getAllProductOrders/${userId}`
+      `${
+        import.meta.env.VITE_BACKEND_API_URL
+      }/api/productOrder/getAllProductOrders/${userId}`
     );
 
     return response.data;

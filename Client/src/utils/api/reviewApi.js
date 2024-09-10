@@ -6,7 +6,9 @@ export const getProductReviews = async (product, productType) => {
   try {
     productType = productType == "Fresh Product" ? "fresh" : "thrift";
     const response = await axios.get(
-      `http://localhost:4000/api/review/get-product-reviews/${product._id}/${productType}`
+      `${import.meta.env.VITE_BACKEND_API_URL}/api/review/get-product-reviews/${
+        product._id
+      }/${productType}`
     );
     // console.log(response.data.reviews);
     // setReviews(response.data.reviews);

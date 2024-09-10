@@ -78,7 +78,9 @@ const ShoppingCard = ({ product, onRemove, onAlert, onUpdateQuantity }) => {
         <div className="col-span-2 flex items-start gap-4">
           <div className="w-28 h-28 max-sm:w-24 max-sm:h-24 shrink-0 bg-gray-100 p-2 rounded-md">
             <img
-              src={`http://localhost:4000/${product.productId.images[0]}`}
+              src={`${import.meta.env.VITE_BACKEND_API_URL}/${
+                product.productId.images[0]
+              }`}
               className="w-full h-full object-contain"
               alt={product.productId.title}
             />
@@ -180,7 +182,9 @@ export default function ShoppingCart() {
   const fetchShoppingCart = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/shopping-cart/get-shopping-cart/${user.id}`
+        `${
+          import.meta.env.VITE_BACKEND_API_URL
+        }/api/shopping-cart/get-shopping-cart/${user.id}`
       );
       if (response.data.success) {
         console.log(response.data);
@@ -424,7 +428,9 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
         order_id: order.id,
         handler: async (response) => {
           const result = await axios.post(
-            "http://localhost:4000/api/payment/paymentVerification",
+            `${
+              import.meta.env.VITE_BACKEND_API_URL
+            }/api/payment/paymentVerification`,
             {
               payment_id: response.razorpay_payment_id,
               order_id: response.razorpay_order_id,
@@ -439,7 +445,9 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
           const { payment_id, order_id, signature } = result.data;
 
           const productOrder = await axios.post(
-            "http://localhost:4000/api/productOrder/createProductOrder",
+            `${
+              import.meta.env.VITE_BACKEND_API_URL
+            }/api/productOrder/createProductOrder`,
             {
               payment_id,
               order_id,
@@ -460,7 +468,7 @@ const CheckoutForm = ({ products, subtotal, shippingCost, taxRate, total }) => {
             navigate("/order-overview");
           }
         },
-        // callback_url: "http://localhost:4000/api/payment/paymentVerification",
+        // callback_url: "${import.meta.env.VITE_BACKEND_API_URL}/api/payment/paymentVerification",
         prefill: {
           name: user.fullName, //customer's name
           email: user.emailAddresses[0].emailAddress,

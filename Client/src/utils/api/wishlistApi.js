@@ -3,7 +3,9 @@ import axios from "axios";
 export const getWishlist = async (userId) => {
   try {
     const response = await axios.get(
-      `http://localhost:4000/api/wishlist/get-wishlist/${userId}`
+      `${
+        import.meta.env.VITE_BACKEND_API_URL
+      }/api/wishlist/get-wishlist/${userId}`
     );
     return response;
   } catch (error) {
@@ -14,7 +16,7 @@ export const getWishlist = async (userId) => {
 export const addToWishlist = async (userId, productId, productType) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/wishlist/add-to-wishlist",
+      `${import.meta.env.VITE_BACKEND_API_URL}/api/wishlist/add-to-wishlist`,
       {
         userId,
         productId,
@@ -35,7 +37,9 @@ export const addToWishlist = async (userId, productId, productType) => {
 export const deleteFromWishlist = async (userId, productId, productType) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/wishlist/delete-from-wishlist",
+      `${
+        import.meta.env.VITE_BACKEND_API_URL
+      }/api/wishlist/delete-from-wishlist`,
       {
         userId,
         productId,

@@ -11,7 +11,7 @@ export default function Statistics() {
   const fetchusers = async () => {
     try {
       const reponse = await axios.get(
-        "http://localhost:4000/api/user/getAllUsers"
+        `${import.meta.env.VITE_BACKEND_API_URL}/api/user/getAllUsers`
       );
       console.log("users: ", reponse.data.data);
       setTotalUsers(reponse.data.data.length);
@@ -23,7 +23,7 @@ export default function Statistics() {
   const fetchFreshProducts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/fresh-products/"
+        `${import.meta.env.VITE_BACKEND_API_URL}/api/fresh-products/`
       );
       // console.log(response.data.freshProducts);
       setTotalFreshproducts(response.data.freshProducts.length);
@@ -35,7 +35,7 @@ export default function Statistics() {
   const fetchUploadedProducts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/thrift-products/"
+        `${import.meta.env.VITE_BACKEND_API_URL}/api/thrift-products/`
       );
       setTotalUploadedProducts(response.data.thriftProducts.length);
     } catch (error) {
@@ -46,7 +46,7 @@ export default function Statistics() {
   const fetchProductOrders = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/productOrder"
+        `${import.meta.env.VITE_BACKEND_API_URL}/api/productOrder`
       );
       setTotalPurchasedProducts(response.data.orders.length);
     } catch (error) {

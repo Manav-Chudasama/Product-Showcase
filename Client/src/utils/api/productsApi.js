@@ -3,7 +3,7 @@ import axios from "axios";
 export const getAllFreshProducts = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:4000/api/fresh-products/"
+      `${import.meta.env.VITE_BACKEND_API_URL}/api/fresh-products/`
     );
     // console.log(response.data.data);
 
@@ -19,7 +19,7 @@ export const getAllFreshProducts = async () => {
 export const getAllthriftProducts = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:4000/api/thrift-products/"
+      `${import.meta.env.VITE_BACKEND_API_URL}/api/thrift-products/`
     );
     // console.log(response.data.thriftProducts);
     // setProducts(response.data.thriftProducts);

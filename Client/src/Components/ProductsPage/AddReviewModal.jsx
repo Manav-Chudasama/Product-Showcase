@@ -27,7 +27,7 @@ export default function AddReviewModal({
     try {
       console.log("nice");
       const response = await axios.post(
-        "http://localhost:4000/api/review/create-review",
+        `${import.meta.env.VITE_BACKEND_API_URL}/api/review/create-review`,
         {
           userId: user.id,
           username: user?.username ?? user.fullName,
