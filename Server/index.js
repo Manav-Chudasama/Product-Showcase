@@ -16,6 +16,11 @@ import productOrderRoutes from "./routes/productOrderRoutes.js";
 
 const app = express();
 dotenv.config();
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use("/uploads/freshProducts", express.static("uploads/freshProducts"));
 app.use("/uploads/thriftProducts", express.static("uploads/thriftProducts"));
 connectdb();
@@ -38,11 +43,6 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 
 app.use("/api/user", userRoutes);
 app.use("/api/fresh-products", freshProductsRoutes);
