@@ -58,7 +58,13 @@ export default function Statistics() {
     fetchusers();
     fetchFreshProducts();
     fetchUploadedProducts();
-  }, [totalUsers, totalFreshProducts]);
+    fetchProductOrders();
+  }, [
+    totalUsers,
+    totalFreshProducts,
+    totalUploadedProducts,
+    totalPurchasedProducts,
+  ]);
   return (
     <div>
       <section className="body-font bg-gray-100">
@@ -85,7 +91,7 @@ export default function Statistics() {
               </div>
               <div className="p-4 sm:w-1/4 w-1/2">
                 <h2 className="title-font font-medium sm:text-4xl text-3xl text-gray-900">
-                  4
+                  {totalPurchasedProducts}
                 </h2>
                 <p className="leading-relaxed">Products Purchased</p>
               </div>
