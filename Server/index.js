@@ -15,14 +15,14 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import productOrderRoutes from "./routes/productOrderRoutes.js";
 
 const app = express();
-dotenv.config();
 app.use(
   cors({
     origin: "https://product-showcase-1.vercel.app",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+dotenv.config();
 app.use("/uploads/freshProducts", express.static("uploads/freshProducts"));
 app.use("/uploads/thriftProducts", express.static("uploads/thriftProducts"));
 connectdb();
