@@ -22,6 +22,7 @@ app.use(
     credentials: true,
   })
 );
+// app.use(cors());
 dotenv.config();
 app.use("/uploads/freshProducts", express.static("uploads/freshProducts"));
 app.use("/uploads/thriftProducts", express.static("uploads/thriftProducts"));
