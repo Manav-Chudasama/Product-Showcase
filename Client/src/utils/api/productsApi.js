@@ -5,7 +5,7 @@ export const getAllFreshProducts = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_API_URL}/api/fresh-products/`
     );
-    console.log(response.data);
+    console.log(response);
 
     // const shuffledProducts = shuffleArray(response.data.data);
     // setProducts(shuffledProducts);
