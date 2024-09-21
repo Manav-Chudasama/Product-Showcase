@@ -34,6 +34,7 @@ export default function ProductDescription() {
   if (!product || !productType) {
     return <div>Product data is unavailable.</div>;
   }
+  console.log(product);
 
   const handleWishlist = async () => {
     // console.log("product: ", product._id, "userid: ", user.id);
@@ -143,9 +144,13 @@ export default function ProductDescription() {
                     {product.images.map((image, index) => (
                       <SwiperSlide key={index}>
                         <img
-                          src={`${
-                            import.meta.env.VITE_BACKEND_API_URL
-                          }/${image}`}
+                          src={
+                            productType != "Thrift Product"
+                              ? `${
+                                  import.meta.env.VITE_BACKEND_API_URL
+                                }/${image}`
+                              : `${image}`
+                          }
                           alt={product.title}
                           className="mx-auto h-96"
                         />
@@ -166,9 +171,13 @@ export default function ProductDescription() {
                     {product.images.map((image, index) => (
                       <SwiperSlide key={index}>
                         <img
-                          src={`${
-                            import.meta.env.VITE_BACKEND_API_URL
-                          }/${image}`}
+                          src={
+                            productType != "Thrift Product"
+                              ? `${
+                                  import.meta.env.VITE_BACKEND_API_URL
+                                }/${image}`
+                              : `${image}`
+                          }
                           alt={product.title}
                           className="cursor-pointer border-2 border-gray-50 transition-all duration-500 hover:border-indigo-600"
                         />

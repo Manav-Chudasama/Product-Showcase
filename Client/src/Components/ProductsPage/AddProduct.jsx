@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import app from "../../utils/firebase/firebase.js";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { Fade } from "react-awesome-reveal";
@@ -92,10 +94,30 @@ export default function AddProduct() {
     event.preventDefault();
 
     const title = event.target[0].value;
-    // const event.target[1].files
+    // const images = event.target[1].files;
     const category = event.target[2].value;
     const price = event.target[3].value;
     const description = event.target[4].value;
+
+    const storage = getStorage(app);
+    const uploadedImageUrls = [];
+
+    for (let index = 0; index < productData.images.length; index++) {
+      const image = productData.images[index];
+      const title = productData.title.replace(/\s+/g, "_"); // Replace spaces in title with underscores
+      const imageName = image.name; // Give each image a unique name
+
+      console.log("Uploading image:", image.name);
+      const storageRef = ref(storage, `thriftProducts/${title}/${imageName}`);
+      await uploadBytes(storageRef, image);
+      const downloadUrl = await getDownloadURL(storageRef);
+
+      console.log("Uploaded image URL:", downloadUrl);
+
+      // Add the download URL to the array
+      uploadedImageUrls.push(downloadUrl);
+    }
+    console.log(uploadedImageUrls);
 
     try {
       const formData = new FormData();
@@ -114,14 +136,15 @@ export default function AddProduct() {
       formData.append("description", description);
       formData.append("category", category);
       formData.append("price", price);
-      productData.images.forEach((image) => {
-        formData.append("images", image);
-      });
+      formData.append("images", uploadedImageUrls);
+      // productData.images.forEach((image) => {
+      //   formData.append("images", image);
+      // });
 
       // Log FormData contents
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(`${key}:`, value);
+      // }
 
       const url = isUpdate
         ? `${
@@ -133,7 +156,7 @@ export default function AddProduct() {
 
       const response = await axios.post(url, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
 

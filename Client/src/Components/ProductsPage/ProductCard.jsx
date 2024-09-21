@@ -158,9 +158,13 @@ export default function ProductCard({
           <>
             <img
               className="mx-auto h-full dark:hidden"
-              src={`${import.meta.env.VITE_BACKEND_API_URL}/${
-                product.images[0]
-              }`}
+              src={
+                productType != "Thrift Product"
+                  ? `${import.meta.env.VITE_BACKEND_API_URL}/${
+                      product.images[0]
+                    }`
+                  : `${product.images[0]}`
+              }
               alt={product.title}
             />
           </>

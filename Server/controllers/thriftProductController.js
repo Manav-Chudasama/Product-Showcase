@@ -45,7 +45,8 @@ export const createThriftProduct = async (req, res) => {
     // console.log("image:", req.body);
     // console.log("files:", req.files);
 
-    const { userId, username, title, description, category, price } = req.body;
+    const { userId, username, title, description, category, price, images } =
+      req.body;
 
     if (
       !userId ||
@@ -54,18 +55,15 @@ export const createThriftProduct = async (req, res) => {
       !description ||
       !category ||
       !price ||
-      !req.files
+      !images
     ) {
       res
         .status(500)
         .json({ success: false, message: "Please fill all the fields" });
     }
 
-    const imageFiles = req.files;
-    const imagePaths = imageFiles.map(
-      (file) => file.destination + `/${file.originalname}`
-    );
-    console.log(imagePaths);
+    const imageFiles = images.split(",");
+    console.log(typeof imageFiles);
 
     const newProduct = new ThriftproductModel({
       userId,
@@ -73,7 +71,7 @@ export const createThriftProduct = async (req, res) => {
       title,
       description,
       category,
-      images: imagePaths,
+      images: imageFiles,
       price,
       reviews: [],
     });
@@ -81,7 +79,7 @@ export const createThriftProduct = async (req, res) => {
     // Save the product to the database
     await newProduct.save();
 
-    console.log("Product saved successfully!");
+    // console.log("Product saved successfully!");
     res.status(200).send({
       success: true,
       message: "Product created successfully!",
