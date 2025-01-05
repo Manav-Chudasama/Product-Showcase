@@ -6,8 +6,6 @@ import thriftProductsModel from "../models/thriftProductsModel.js";
 
 // add a review to the product
 export const createReview = async (req, res) => {
-  console.log("createReview");
-
   try {
     const {
       userId,
@@ -67,18 +65,22 @@ export const createReview = async (req, res) => {
     }
 
     // Add the review to the product's reviews array
-    product.reviews.push({
-      userId: validUserId,
+    const newReview = {
+      userId: validUserId._id,
       username,
       rating,
       description: reviewDescription,
       timestamp: new Date(),
-    });
+    };
+
+    // Add the review to the product's reviews array
+    product.reviews.push(newReview);
     await product.save();
 
     res.status(201).json({
       success: true,
       message: "Review added successfully",
+      newReview,
     });
   } catch (error) {
     console.log(error);

@@ -4,11 +4,14 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { calculateRatings, getProductReviews } from "../../utils/api/reviewApi";
 export default function AddReviewModal({
   product,
   productType,
   openModal,
   setOpenModal,
+  setReviews,
+  setRatingStats,
 }) {
   const { user } = useUser();
   const [rating, setRating] = useState(0);
@@ -18,7 +21,18 @@ export default function AddReviewModal({
     return null;
   }
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    try {
+      const response = await getProductReviews(product, productType);
+      console.log(response.data);
+      setReviews(response.data.reviews);
+      const stats = calculateRatings(response.data.reviews);
+      setRatingStats(stats);
+      setRating(0);
+      setDescription("");
+    } catch (error) {
+      console.log(error);
+    }
     setOpenModal(false);
   };
 
@@ -47,7 +61,7 @@ export default function AddReviewModal({
       console.log(error);
     }
 
-    // Optionally close the modal
+    //close the modal
     handleClose();
   };
   return (
@@ -213,4 +227,6 @@ AddReviewModal.propTypes = {
   productType: PropTypes.string.isRequired,
   openModal: PropTypes.bool.isRequired,
   setOpenModal: PropTypes.func.isRequired,
+  setReviews: PropTypes.func.isRequired,
+  setRatingStats: PropTypes.func.isRequired,
 };

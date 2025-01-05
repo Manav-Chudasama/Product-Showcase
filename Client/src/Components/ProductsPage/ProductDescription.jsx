@@ -257,8 +257,10 @@ export default function ProductDescription() {
         product={product}
         productType={productType}
         reviews={reviews}
+        setReviews={setReviews}
         ratingStats={ratingStats}
         renderStars={renderStars}
+        setRatingStats={setRatingStats}
       />
       {alert.message && (
         <AlertBox

@@ -11,7 +11,6 @@ export default function UserThriftProducts() {
   const fetchUserProducts = async () => {
     try {
       const userId = user.id;
-      // console.log(user.id);
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_API_URL}/api/thrift-products/${userId}`
       );

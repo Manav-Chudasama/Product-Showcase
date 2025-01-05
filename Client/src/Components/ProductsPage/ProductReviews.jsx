@@ -7,8 +7,10 @@ export default function ProductReviews({
   product,
   productType,
   reviews,
+  setReviews,
   ratingStats,
   renderStars,
+  setRatingStats,
 }) {
   const [openModal, setOpenModal] = useState(false);
   return (
@@ -55,7 +57,7 @@ export default function ProductReviews({
               {ratingStats.ratingCounts.map((count, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <p className="w-2 shrink-0 text-start text-sm font-medium leading-none text-gray-900">
-                    {5 - index}
+                    {index + 1}
                   </p>
                   <FaStar color="#FACA15" />
                   <div className="h-1.5 w-80 rounded-full bg-gray-200">
@@ -147,6 +149,8 @@ export default function ProductReviews({
         productType={productType}
         openModal={openModal}
         setOpenModal={setOpenModal}
+        setReviews={setReviews}
+        setRatingStats={setRatingStats}
       />
     </>
   );
@@ -156,6 +160,8 @@ ProductReviews.propTypes = {
   product: PropTypes.object.isRequired,
   productType: PropTypes.string.isRequired,
   reviews: PropTypes.array.isRequired,
+  setReviews: PropTypes.func.isRequired,
   ratingStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   renderStars: PropTypes.func.isRequired,
+  setRatingStats: PropTypes.func.isRequired,
 };

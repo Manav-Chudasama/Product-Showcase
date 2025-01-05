@@ -5,6 +5,7 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { Fade } from "react-awesome-reveal";
 import { useLocation } from "react-router-dom";
+import AlertBox from "../../utils/parts/AlertBox.jsx";
 export default function AddProduct() {
   const { user } = useUser();
   const location = useLocation();
@@ -19,6 +20,7 @@ export default function AddProduct() {
   const [file, setFile] = useState([]);
   const reader = new FileReader();
   const fileInputRef = useRef(null);
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -80,10 +82,10 @@ export default function AddProduct() {
         price: product.price,
         images: product.images || [],
       });
-      console.log(product._id);
+      // console.log(product.images);
       const images = [];
       product.images.map((image) =>
-        images.push(`${import.meta.env.VITE_BACKEND_API_URL}/` + image)
+        images.push(image)
       );
       setFile(images);
     }
@@ -176,6 +178,11 @@ export default function AddProduct() {
     } catch (error) {
       console.error("Error creating product:", error);
     }
+  };
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
   };
 
   return (
@@ -327,6 +334,13 @@ export default function AddProduct() {
           </form>
         </div>
       </section>
+      {alert.message && (
+        <AlertBox
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert({ message: "", type: "" })}
+        />
+      )}
     </Fade>
   );
 }
