@@ -33,7 +33,7 @@ export default function AddProduct() {
 
     // If the new upload exceeds 3, reset to only the new files
     if (files.length > 3 || productData.images.length + files.length > 3) {
-      alert(
+      window.alert(
         "You can only upload a maximum of 3 images. First 3 will be Selected."
       );
       const newPreviewUrls = files
@@ -84,9 +84,7 @@ export default function AddProduct() {
       });
       // console.log(product.images);
       const images = [];
-      product.images.map((image) =>
-        images.push(image)
-      );
+      product.images.map((image) => images.push(image));
       setFile(images);
     }
     window.scrollTo(0, 0);
@@ -100,6 +98,8 @@ export default function AddProduct() {
     const category = event.target[2].value;
     const price = event.target[3].value;
     const description = event.target[4].value;
+    console.log("Product data:", productData.title);
+    
 
     const storage = getStorage(app);
     const uploadedImageUrls = [];
@@ -174,7 +174,14 @@ export default function AddProduct() {
         setFile([]);
       }
 
-      console.log("Product created successfully:", response.data);
+      console.log(
+        `Product ${isUpdate ? "updated" : "created"} successfully:`,
+        response.data
+      );
+      showAlert(
+        `Product ${isUpdate ? "updated" : "created"} successfully:`,
+        "success"
+      );
     } catch (error) {
       console.error("Error creating product:", error);
     }

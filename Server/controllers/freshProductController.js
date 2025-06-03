@@ -69,6 +69,7 @@ export const createFreshProduct = async (req, res) => {
   }
 };
 
+//Admin side
 // update a fresh product
 export const updateFreshProduct = async (req, res) => {};
 

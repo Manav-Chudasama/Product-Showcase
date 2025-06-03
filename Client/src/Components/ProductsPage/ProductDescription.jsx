@@ -128,7 +128,7 @@ export default function ProductDescription() {
             <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
               <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
                 <div className="w-full">
-                  <Swiper
+                  <Swiper 
                     modules={[Navigation, Thumbs, EffectFade]}
                     loop={true}
                     spaceBetween={32}
